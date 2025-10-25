@@ -1,0 +1,9 @@
+{
+  "lap_time_transformer": "projects/352251040499/locations/us-central1/endpoints/619323014089015296",
+  "tire_degradation": "projects/352251040499/locations/us-central1/endpoints/5231009032516403200",
+  "fcy_hazard": "projects/352251040499/locations/us-central1/endpoints/8856406732549652480",
+  "pit_loss": "projects/352251040499/locations/us-central1/endpoints/4567853987386097664",
+  "anomaly_detector": "projects/352251040499/locations/us-central1/endpoints/2053508389173985280",
+  "driver_embedding": "projects/352251040499/locations/us-central1/endpoints/6665194407601373184",
+  "traffic_gnn": "projects/352251040499/locations/us-central1/endpoints/1745222920931639296"
+}

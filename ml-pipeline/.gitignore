@@ -1,0 +1,13 @@
+.env.local
+config/gcp_credentials.json
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.DS_Store
+*.log
+processed_data/
+*.pth
+*.pkl
+.ipynb_checkpoints/
+
