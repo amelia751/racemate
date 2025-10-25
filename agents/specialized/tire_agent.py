@@ -13,16 +13,20 @@ from base.agent import BaseAgent
 class TireAgent(BaseAgent):
     """Agent specialized in tire strategy and degradation analysis"""
     
-    def __init__(self, api_client=None):
+    def __init__(self, api_client=None, use_gemini=True):
         super().__init__(
             name="TireAgent",
-            role="Tire Strategy Specialist"
+            role="Tire Strategy Specialist",
+            api_client=api_client,
+            use_gemini=use_gemini
         )
-        self.api_client = api_client
         
         # Tire thresholds
         self.critical_grip = 0.70
         self.warning_grip = 0.80
+    
+    def _get_expertise_description(self) -> str:
+        return "Tire degradation analysis, grip monitoring, and pit timing recommendations"
     
     def process(self, query: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Process tire-related queries"""

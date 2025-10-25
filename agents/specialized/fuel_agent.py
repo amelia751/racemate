@@ -13,19 +13,23 @@ from base.agent import BaseAgent
 class FuelAgent(BaseAgent):
     """Agent specialized in fuel strategy and consumption analysis"""
     
-    def __init__(self, api_client=None):
+    def __init__(self, api_client=None, use_gemini=True):
         super().__init__(
             name="FuelAgent",
-            role="Fuel Strategy Specialist"
+            role="Fuel Strategy Specialist",
+            api_client=api_client,
+            use_gemini=use_gemini
         )
-        self.api_client = api_client
         
         # Fuel strategy parameters
         self.tank_capacity = 50.0  # liters (example)
         self.safety_margin = 2.0   # liters
     
+    def _get_expertise_description(self) -> str:
+        return "Fuel consumption analysis, pit timing, and fuel-saving strategies"
+    
     def process(self, query: str, context: Optional[Dict[str, Any]] = None) -> str:
-        """Process fuel-related queries"""
+        """Process fuel-related queries with Gemini"""
         
         self.add_message("user", query)
         
@@ -56,11 +60,27 @@ class FuelAgent(BaseAgent):
             
             laps_remaining = total_laps - current_lap
             fuel_needed = laps_remaining * burn_rate
-            current_fuel = telemetry.get('fuel_level', 30)  # Would come from telemetry
+            current_fuel = telemetry.get('fuel_level', 30)
             
-            response = self._generate_fuel_strategy(
-                burn_rate, current_fuel, laps_remaining, fuel_needed
-            )
+            # Use Gemini for natural language response
+            if self.use_gemini:
+                analysis_data = {
+                    "burn_rate": burn_rate,
+                    "current_fuel": current_fuel,
+                    "laps_remaining": laps_remaining,
+                    "fuel_needed": fuel_needed,
+                    "margin": current_fuel - fuel_needed,
+                    "safety_margin": self.safety_margin
+                }
+                
+                enhanced_context = context.copy()
+                enhanced_context['fuel_analysis'] = analysis_data
+                
+                response = self.generate_with_gemini(query, enhanced_context)
+            else:
+                response = self._generate_fuel_strategy(
+                    burn_rate, current_fuel, laps_remaining, fuel_needed
+                )
         else:
             response = f"Fuel prediction error: {fuel_result.get('error')}"
         

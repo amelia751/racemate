@@ -16,16 +16,17 @@ from specialized.telemetry_agent import TelemetryAgent
 class ChiefAgent(BaseAgent):
     """Chief orchestrator agent that coordinates specialized agents"""
     
-    def __init__(self, api_client=None):
+    def __init__(self, api_client=None, use_gemini=True):
         super().__init__(
             name="ChiefAgent",
-            role="Race Strategy Coordinator"
+            role="Race Strategy Coordinator",
+            api_client=api_client,
+            use_gemini=use_gemini
         )
-        self.api_client = api_client
         
-        # Initialize specialized agents
-        self.fuel_agent = FuelAgent(api_client)
-        self.tire_agent = TireAgent(api_client)
+        # Initialize specialized agents with Gemini
+        self.fuel_agent = FuelAgent(api_client, use_gemini=use_gemini)
+        self.tire_agent = TireAgent(api_client, use_gemini=use_gemini)
         self.telemetry_agent = TelemetryAgent(api_client)
         
         self.agents = {
@@ -33,6 +34,9 @@ class ChiefAgent(BaseAgent):
             "tire": self.tire_agent,
             "telemetry": self.telemetry_agent
         }
+    
+    def _get_expertise_description(self) -> str:
+        return "Overall race strategy coordination, pit wall decision-making, and agent orchestration"
     
     def route_query(self, query: str) -> str:
         """Determine which agent should handle the query"""
@@ -54,7 +58,7 @@ class ChiefAgent(BaseAgent):
         return "comprehensive"
     
     def process(self, query: str, context: Optional[Dict[str, Any]] = None) -> str:
-        """Process query by routing to appropriate agent(s)"""
+        """Process query by routing to appropriate agent(s) with Gemini orchestration"""
         
         self.add_message("user", query)
         
@@ -64,7 +68,13 @@ class ChiefAgent(BaseAgent):
         if route == "comprehensive":
             # Get insights from all agents
             responses = self._comprehensive_analysis(context)
-            response = self._format_comprehensive_response(responses)
+            
+            # Use Gemini to synthesize comprehensive response
+            if self.use_gemini:
+                synthesis_prompt = f"Synthesize these racing insights into a comprehensive pit wall briefing:\n\n{responses}"
+                response = self.generate_with_gemini(synthesis_prompt, context)
+            else:
+                response = self._format_comprehensive_response(responses)
         else:
             # Route to specific agent
             agent = self.agents.get(route)
