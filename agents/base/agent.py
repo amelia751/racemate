@@ -154,8 +154,13 @@ class BaseAgent:
         return "General race strategy and analysis"
     
     def _fallback_response(self, query: str, context: Optional[Dict[str, Any]] = None) -> str:
-        """Fallback response when Gemini is unavailable - override in subclasses"""
-        return f"I am {self.name}, analyzing your query: {query}"
+        """Fallback response when Gemini is unavailable - BASIC ANALYSIS ONLY"""
+        return (
+            f"[{self.name} - BASIC MODE: AI Analysis Unavailable]\n"
+            f"Query: {query}\n"
+            f"WARNING: Operating without AI-powered natural language analysis. "
+            f"Recommendations may be less contextual."
+        )
     
     def process(self, query: str, context: Optional[Dict[str, Any]] = None) -> str:
         """Process user query - to be implemented by subclasses"""

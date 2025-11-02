@@ -53,28 +53,33 @@ router = APIRouter()
 
 @router.post("/fuel", response_model=FuelPredictionResponse)
 async def predict_fuel(request: FuelPredictionRequest):
-    """Predict fuel consumption (simplified formula-based prediction)"""
+    """Predict fuel consumption using trained ML model"""
     start_time = time.time()
     
     try:
-        # Simplified physics-based fuel prediction
-        # Fuel consumption ≈ f(RPM, throttle, speed, gear)
+        # Load trained fuel model from GCS
+        model_data = model_loader.load_model('fuel_consumption', None)
         
-        # Normalize inputs
-        rpm_factor = request.nmot / 8000.0  # 0-1 range
-        throttle_factor = request.aps / 100.0  # 0-1 range
-        speed_factor = request.speed / 200.0  # 0-1 range
-        gear_factor = 1.0 - (request.gear / 7.0)  # Lower gear = more fuel
+        if model_data is None or 'model' not in model_data:
+            raise HTTPException(
+                status_code=503, 
+                detail="Fuel model not available - SYSTEM UNSAFE FOR RACING"
+            )
         
-        # Weighted fuel burn rate (synthetic units)
-        base_burn = 0.2
-        prediction = float(
-            base_burn + 
-            (rpm_factor * 0.25) +
-            (throttle_factor * 0.30) +
-            (speed_factor * 0.15) +
-            (gear_factor * 0.10)
-        )
+        model = model_data['model']
+        
+        # Prepare features for XGBoost model
+        import pandas as pd
+        features = pd.DataFrame([{
+            'nmot': request.nmot,
+            'aps': request.aps,
+            'gear': request.gear,
+            'speed': request.speed,
+            'lap': request.lap
+        }])
+        
+        # Predict using real trained model
+        prediction = float(model.predict(features)[0])
         
         latency_ms = (time.time() - start_time) * 1000
         
@@ -84,38 +89,51 @@ async def predict_fuel(request: FuelPredictionRequest):
             latency_ms=latency_ms
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Fuel prediction CRITICAL FAILURE: {str(e)} - DO NOT RACE"
+        )
 
 
 @router.post("/laptime", response_model=LapTimePredictionResponse)
 async def predict_laptime(request: LapTimePredictionRequest):
-    """Predict lap time (simplified statistical prediction)"""
+    """Predict lap time using trained Transformer model"""
     start_time = time.time()
     
     try:
-        # Simplified lap time prediction based on telemetry statistics
-        telemetry = np.array(request.telemetry_sequence)
+        # Load trained Lap-Time Transformer from GCS
+        model_data = model_loader.load_model('lap_time_transformer', LapTimeTransformer)
         
-        # Extract features (assuming first columns are speed, rpm, gear, throttle)
-        avg_speed = np.mean(telemetry[:, 0]) if telemetry.shape[1] > 0 else 100
-        avg_rpm = np.mean(telemetry[:, 1]) if telemetry.shape[1] > 1 else 6000
-        avg_throttle = np.mean(telemetry[:, 3]) if telemetry.shape[1] > 3 else 50
+        if model_data is None or 'model_state' not in model_data:
+            raise HTTPException(
+                status_code=503,
+                detail="Lap-time model not available - SYSTEM UNSAFE FOR RACING"
+            )
         
-        # Simple lap time delta prediction (seconds vs baseline)
-        # Faster avg speed = negative delta (faster lap)
-        # Higher avg throttle = negative delta (more aggressive)
-        speed_factor = (avg_speed - 150) / 50.0
-        rpm_factor = (avg_rpm - 6000) / 2000.0
-        throttle_factor = (avg_throttle - 50) / 50.0
+        # Initialize model with trained weights
+        model = LapTimeTransformer(input_dim=16, hidden_dim=256, num_layers=4)
+        model.load_state_dict(model_data['model_state'])
+        model.eval()
         
-        prediction = float(-speed_factor * 0.5 - throttle_factor * 0.3)
+        # Prepare telemetry sequence
+        telemetry = torch.FloatTensor(request.telemetry_sequence)
         
-        # Uncertainty quantiles (± variations)
+        # Ensure correct shape (batch, seq_len, features)
+        if telemetry.dim() == 2:
+            telemetry = telemetry.unsqueeze(0)
+        
+        # Predict using real trained model
+        with torch.no_grad():
+            mean, quantiles = model(telemetry)
+        
+        prediction = float(mean[0, 0].item())
         quantile_dict = {
-            "p10": float(prediction - 1.2),
-            "p50": float(prediction),
-            "p90": float(prediction + 0.8)
+            "p10": float(quantiles[0][0, 0].item()),
+            "p50": float(quantiles[1][0, 0].item()),
+            "p90": float(quantiles[2][0, 0].item())
         }
         
         latency_ms = (time.time() - start_time) * 1000
@@ -126,23 +144,46 @@ async def predict_laptime(request: LapTimePredictionRequest):
             latency_ms=latency_ms
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Lap-time prediction CRITICAL FAILURE: {str(e)} - DO NOT RACE"
+        )
 
 
 @router.post("/tire", response_model=TirePredictionResponse)
 async def predict_tire(request: TirePredictionRequest):
-    """Predict tire degradation"""
+    """Predict tire degradation using trained physics-informed model"""
     start_time = time.time()
     
     try:
-        # Load model
+        # Load trained tire model from GCS
         model_data = model_loader.load_model('tire_degradation', TireDegradationModel)
         
-        # Initialize model
+        if model_data is None or 'model_state' not in model_data:
+            raise HTTPException(
+                status_code=503,
+                detail="Tire model not available - SYSTEM UNSAFE FOR RACING"
+            )
+        
+        # Initialize model with trained weights
         model = TireDegradationModel(input_dim=16, hidden_channels=64, num_layers=3)
         model.load_state_dict(model_data['model_state'])
         model.eval()
+        
+        # CRITICAL: Require real telemetry sequence in request
+        if not hasattr(request, 'telemetry_sequence') or not request.telemetry_sequence:
+            raise HTTPException(
+                status_code=400,
+                detail="CRITICAL: telemetry_sequence required for tire prediction - CANNOT USE DUMMY DATA"
+            )
+        
+        # Prepare real telemetry data
+        telemetry = torch.FloatTensor(request.telemetry_sequence)
+        if telemetry.dim() == 2:
+            telemetry = telemetry.unsqueeze(0)
         
         # Prepare physics features
         physics_features = {
@@ -151,12 +192,9 @@ async def predict_tire(request: TirePredictionRequest):
             'air_temp': torch.tensor([[request.air_temp]])
         }
         
-        # Dummy telemetry sequence (would come from request in production)
-        dummy_telemetry = torch.randn(1, 100, 16)
-        
-        # Predict
+        # Predict using real trained model with REAL DATA
         with torch.no_grad():
-            grip_index = model(dummy_telemetry, physics_features)
+            grip_index = model(telemetry, physics_features)
         
         prediction = float(grip_index[0, 0].item())
         
@@ -168,8 +206,13 @@ async def predict_tire(request: TirePredictionRequest):
             latency_ms=latency_ms
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Tire prediction CRITICAL FAILURE: {str(e)} - DO NOT RACE"
+        )
 
 
 @router.post("/traffic", response_model=TrafficPredictionResponse)

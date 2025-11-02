@@ -40,15 +40,29 @@ class TireAgent(BaseAgent):
         
         telemetry = context['telemetry']
         
-        # Get tire prediction from API
-        if self.api_client:
+        # Get tire prediction from API - NO FALLBACK FOR SAFETY
+        if not self.api_client:
+            response = "CRITICAL ERROR: API client not available. CANNOT provide tire analysis. SYSTEM UNSAFE FOR RACING."
+            self.add_message("assistant", response)
+            return response
+        
+        try:
             tire_result = self.api_client.predict_tire(
                 cum_brake_energy=telemetry.get('cum_brake_energy', 1500),
                 cum_lateral_load=telemetry.get('cum_lateral_load', 2000),
-                air_temp=context.get('weather', {}).get('air_temp', 25.0)
+                air_temp=context.get('weather', {}).get('air_temp', 25.0),
+                telemetry_sequence=telemetry.get('telemetry_sequence', [])
             )
-        else:
-            tire_result = {"prediction": 0.85, "status": "mock"}
+            
+            if tire_result.get('error'):
+                response = f"CRITICAL ERROR: Tire prediction failed - {tire_result['error']}. SYSTEM UNSAFE FOR RACING."
+                self.add_message("assistant", response)
+                return response
+                
+        except Exception as e:
+            response = f"CRITICAL ERROR: Tire prediction API failure - {str(e)}. SYSTEM UNSAFE FOR RACING."
+            self.add_message("assistant", response)
+            return response
         
         # Analyze tire strategy
         if "error" not in tire_result:

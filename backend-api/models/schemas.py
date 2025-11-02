@@ -94,7 +94,7 @@ class TirePredictionRequest(BaseModel):
     cum_brake_energy: float = Field(..., description="Cumulative brake energy", ge=0)
     cum_lateral_load: float = Field(..., description="Cumulative lateral load", ge=0)
     air_temp: float = Field(default=25.0, description="Air temperature (°C)")
-    telemetry_sequence: Optional[List[List[float]]] = None
+    telemetry_sequence: List[List[float]] = Field(..., description="REQUIRED: Real telemetry sequence - NO DUMMY DATA ALLOWED")
     
     class Config:
         json_schema_extra = {

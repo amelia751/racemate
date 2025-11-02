@@ -40,17 +40,30 @@ class FuelAgent(BaseAgent):
         
         telemetry = context['telemetry']
         
-        # Get fuel prediction from API
-        if self.api_client:
+        # Get fuel prediction from API - NO FALLBACK FOR SAFETY
+        if not self.api_client:
+            response = "CRITICAL ERROR: API client not available. CANNOT provide fuel analysis. SYSTEM UNSAFE FOR RACING."
+            self.add_message("assistant", response)
+            return response
+        
+        try:
             fuel_result = self.api_client.predict_fuel(
-                speed=telemetry.get('speed', 150),
-                nmot=telemetry.get('nmot', 6000),
-                gear=telemetry.get('gear', 4),
-                aps=telemetry.get('aps', 80),
+                speed=telemetry.get('speed'),
+                nmot=telemetry.get('nmot'),
+                gear=telemetry.get('gear'),
+                aps=telemetry.get('aps'),
                 lap=telemetry.get('lap', 1)
             )
-        else:
-            fuel_result = {"prediction": 0.5, "status": "mock"}
+            
+            if fuel_result.get('error'):
+                response = f"CRITICAL ERROR: Fuel prediction failed - {fuel_result['error']}. SYSTEM UNSAFE FOR RACING."
+                self.add_message("assistant", response)
+                return response
+                
+        except Exception as e:
+            response = f"CRITICAL ERROR: Fuel prediction API failure - {str(e)}. SYSTEM UNSAFE FOR RACING."
+            self.add_message("assistant", response)
+            return response
         
         # Analyze fuel strategy
         if "error" not in fuel_result:
