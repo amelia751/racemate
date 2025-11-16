@@ -4,7 +4,7 @@
  * Red Bull Style Charts - More Time-Series Focus
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent } from '@/components/ui/card';
 import { useCogniraceStore } from '@/lib/store';
@@ -14,20 +14,23 @@ interface DataPoint {
   value: number;
 }
 
-export function ThrottleBrakeTimeSeries() {
+export const ThrottleBrakeTimeSeries = memo(function ThrottleBrakeTimeSeries() {
   const [data, setData] = useState<any[]>([]);
+  const [pointId, setPointId] = useState(0);
   const { telemetryData } = useCogniraceStore();
 
   useEffect(() => {
     if (telemetryData) {
       const now = new Date().toLocaleTimeString();
       const newPoint = {
+        id: pointId,
         time: now,
         throttle: telemetryData.throttle || telemetryData.aps || 0,
         brake: Math.random() * 100
       };
 
       setData(prev => [...prev, newPoint].slice(-20));
+      setPointId(id => id + 1);
     }
   }, [telemetryData]);
 
@@ -36,36 +39,39 @@ export function ThrottleBrakeTimeSeries() {
       <CardContent className="pt-3 h-full">
         <div className="text-green-400 text-xs font-bold mb-2 tracking-wider">THROTTLE / BRAKE</div>
         <ResponsiveContainer width="100%" height="85%">
-          <LineChart data={data}>
+          <LineChart data={data} key="throttle-brake-chart">
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
             <XAxis hide />
             <YAxis stroke="#22c55e" domain={[0, 100]} />
-            <Tooltip 
+            <Tooltip
               contentStyle={{ backgroundColor: '#000', border: '1px solid #22c55e' }}
               labelStyle={{ color: '#22c55e' }}
             />
-            <Line type="monotone" dataKey="throttle" stroke="#22c55e" strokeWidth={2} dot={false} />
-            <Line type="monotone" dataKey="brake" stroke="#ef4444" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="throttle" stroke="#22c55e" strokeWidth={2} dot={false} isAnimationActive={false} />
+            <Line type="monotone" dataKey="brake" stroke="#ef4444" strokeWidth={2} dot={false} isAnimationActive={false} />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>
     </Card>
   );
-}
+})
 
-export function GForceTimeSeries() {
+export const GForceTimeSeries = memo(function GForceTimeSeries() {
   const [data, setData] = useState<any[]>([]);
+  const [pointId, setPointId] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date().toLocaleTimeString();
       const newPoint = {
+        id: pointId,
         time: now,
         lateral: -1 + Math.random() * 2,
         longitudinal: -1 + Math.random() * 2
       };
 
       setData(prev => [...prev, newPoint].slice(-20));
+      setPointId(id => id + 1);
     }, 100);
 
     return () => clearInterval(interval);
@@ -76,22 +82,22 @@ export function GForceTimeSeries() {
       <CardContent className="pt-3 h-full">
         <div className="text-purple-400 text-xs font-bold mb-2 tracking-wider">G-FORCE</div>
         <ResponsiveContainer width="100%" height="85%">
-          <LineChart data={data}>
+          <LineChart data={data} key="gforce-chart">
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
             <XAxis hide />
             <YAxis stroke="#a855f7" domain={[-2, 2]} />
-            <Tooltip 
+            <Tooltip
               contentStyle={{ backgroundColor: '#000', border: '1px solid #a855f7' }}
               labelStyle={{ color: '#a855f7' }}
             />
-            <Line type="monotone" dataKey="lateral" stroke="#a855f7" strokeWidth={2} dot={false} name="Lateral" />
-            <Line type="monotone" dataKey="longitudinal" stroke="#22c55e" strokeWidth={2} dot={false} name="Long" />
+            <Line type="monotone" dataKey="lateral" stroke="#a855f7" strokeWidth={2} dot={false} name="Lateral" isAnimationActive={false} />
+            <Line type="monotone" dataKey="longitudinal" stroke="#22c55e" strokeWidth={2} dot={false} name="Long" isAnimationActive={false} />
           </LineChart>
         </ResponsiveContainer>
       </CardContent>
     </Card>
   );
-}
+})
 
 export function FuelBar() {
   const { telemetryData } = useCogniraceStore();
