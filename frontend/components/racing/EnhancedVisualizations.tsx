@@ -209,10 +209,14 @@ export function BrakeSystemStatus() {
     }
   }, [telemetryData]);
 
-  const getTempColor = (temp: number) => {
-    if (temp > 500) return '#ef4444';
-    if (temp > 450) return '#fb923c';
-    return '#22c55e';
+  const getCornerColor = (corner: string) => {
+    switch (corner) {
+      case 'FL': return '#ef4444';   // Red
+      case 'FR': return '#fb923c';   // Orange
+      case 'RL': return '#22c55e';   // Green
+      case 'RR': return '#06b6d4';   // Cyan
+      default: return '#ef4444';
+    }
   };
 
   return (
@@ -269,18 +273,21 @@ export function BrakeSystemStatus() {
 
           {/* Corner Status */}
           <div className="flex flex-col gap-1 justify-center">
-            {Object.entries(brakes).map(([corner, data]) => (
-              <div key={corner} className="flex items-center gap-2 text-xs">
-                <span className="w-6 text-muted-foreground font-bold">{corner}</span>
-                <div
-                  className="w-10 h-2.5 rounded-full"
-                  style={{ backgroundColor: getTempColor(data.temp) }}
-                />
-                <span className="font-mono font-bold text-[10px]" style={{ color: getTempColor(data.temp) }}>
-                  {Math.round(data.temp)}°C
-                </span>
-              </div>
-            ))}
+            {Object.entries(brakes).map(([corner, data]) => {
+              const color = getCornerColor(corner);
+              return (
+                <div key={corner} className="flex items-center gap-2 text-xs">
+                  <span className="w-6 text-muted-foreground font-bold">{corner}</span>
+                  <div
+                    className="w-10 h-2.5 rounded-full"
+                    style={{ backgroundColor: color }}
+                  />
+                  <span className="font-mono font-bold text-[10px]" style={{ color: color }}>
+                    {Math.round(data.temp)}°C
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </CardContent>
