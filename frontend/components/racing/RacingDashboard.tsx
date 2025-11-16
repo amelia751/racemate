@@ -20,6 +20,7 @@ import DebugLayer from '@/components/DebugLayer';
 
 export default function RacingDashboard() {
   const [mounted, setMounted] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -61,9 +62,11 @@ export default function RacingDashboard() {
                 <span className="text-cyan-400">COGNI</span>
                 <span className="text-yellow-400">RACE</span>
               </div>
-              <Badge variant="outline" className="text-xs border-green-500 text-green-400 animate-pulse">
-                ● LIVE
-              </Badge>
+              {isStreaming && (
+                <Badge variant="default" className="text-xs bg-green-500 text-white animate-pulse">
+                  ● LIVE
+                </Badge>
+              )}
             </div>
             
             <div className="flex items-center gap-6">
@@ -91,16 +94,19 @@ export default function RacingDashboard() {
             className="col-span-9 space-y-4 overflow-y-auto pr-2"
             style={{ maxHeight: 'calc(100vh - 140px)' }}
           >
-            {/* Lap Time Hero */}
-            <Card className="bg-black/60 border-cyan-500/30 backdrop-blur-sm">
-              <CardContent className="pt-6">
-                <LapTimeDisplay />
-              </CardContent>
-            </Card>
+            {/* Lap Time & Current Status - Side by Side */}
+            <div className="grid grid-cols-2 gap-4 h-[180px]">
+              {/* Lap Time Info - Left */}
+              <Card className="bg-black/60 border-cyan-500/30 backdrop-blur-sm">
+                <CardContent className="pt-4 h-full">
+                  <LapTimeDisplay />
+                </CardContent>
+              </Card>
 
-            {/* Hero Metrics - Large Current Values */}
-            <div className="h-[160px]">
-              <HeroMetrics />
+              {/* Hero Metrics - Right */}
+              <div className="h-full">
+                <HeroMetrics />
+              </div>
             </div>
 
             {/* Real-time Charts - Speed & RPM */}
@@ -125,7 +131,7 @@ export default function RacingDashboard() {
             </div>
 
             {/* Streaming Controls */}
-            <StreamingControls />
+            <StreamingControls onStreamingChange={setIsStreaming} />
           </motion.div>
 
           {/* RIGHT COLUMN - AI Assistant */}

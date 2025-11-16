@@ -59,9 +59,11 @@ export const ThrottleBrakeTimeSeries = memo(function ThrottleBrakeTimeSeries() {
 export const GForceTimeSeries = memo(function GForceTimeSeries() {
   const [data, setData] = useState<any[]>([]);
   const [pointId, setPointId] = useState(0);
+  const { telemetryData } = useCogniraceStore();
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    // Only update when streaming (when telemetryData is being updated)
+    if (telemetryData) {
       const now = new Date().toLocaleTimeString();
       const newPoint = {
         id: pointId,
@@ -72,10 +74,8 @@ export const GForceTimeSeries = memo(function GForceTimeSeries() {
 
       setData(prev => [...prev, newPoint].slice(-20));
       setPointId(id => id + 1);
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, []);
+    }
+  }, [telemetryData]);
 
   return (
     <Card className="bg-black/40 border-purple-500/30 h-full">

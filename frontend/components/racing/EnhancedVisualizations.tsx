@@ -79,34 +79,35 @@ export function TireTemperatureDisplay() {
     RL: { inner: 82, middle: 85, outer: 87 },
     RR: { inner: 83, middle: 86, outer: 88 }
   });
+  const { telemetryData } = useCogniraceStore();
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    // Only update when streaming (when telemetryData is being updated)
+    if (telemetryData) {
       setTemps({
-        FL: { 
-          inner: 80 + Math.random() * 15, 
-          middle: 85 + Math.random() * 15, 
-          outer: 88 + Math.random() * 15 
+        FL: {
+          inner: 80 + Math.random() * 15,
+          middle: 85 + Math.random() * 15,
+          outer: 88 + Math.random() * 15
         },
-        FR: { 
-          inner: 80 + Math.random() * 15, 
-          middle: 85 + Math.random() * 15, 
-          outer: 88 + Math.random() * 15 
+        FR: {
+          inner: 80 + Math.random() * 15,
+          middle: 85 + Math.random() * 15,
+          outer: 88 + Math.random() * 15
         },
-        RL: { 
-          inner: 78 + Math.random() * 15, 
-          middle: 83 + Math.random() * 15, 
-          outer: 85 + Math.random() * 15 
+        RL: {
+          inner: 78 + Math.random() * 15,
+          middle: 83 + Math.random() * 15,
+          outer: 85 + Math.random() * 15
         },
-        RR: { 
-          inner: 78 + Math.random() * 15, 
-          middle: 83 + Math.random() * 15, 
-          outer: 85 + Math.random() * 15 
+        RR: {
+          inner: 78 + Math.random() * 15,
+          middle: 83 + Math.random() * 15,
+          outer: 85 + Math.random() * 15
         }
       });
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
+    }
+  }, [telemetryData]);
 
   const getTempColor = (temp: number) => {
     if (temp > 95) return '#ef4444';
@@ -158,39 +159,42 @@ export function BrakeSystemStatus() {
   });
 
   const [tempHistory, setTempHistory] = useState<any[]>([]);
+  const [historyId, setHistoryId] = useState(0);
+  const { telemetryData } = useCogniraceStore();
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    // Only update when streaming (when telemetryData is being updated)
+    if (telemetryData) {
       const newBrakes = {
-        FL: { 
-          temp: 400 + Math.random() * 100, 
-          pressure: 80 + Math.random() * 10, 
-          wear: 10 + Math.random() * 10 
+        FL: {
+          temp: 400 + Math.random() * 100,
+          pressure: 80 + Math.random() * 10,
+          wear: 10 + Math.random() * 10
         },
-        FR: { 
-          temp: 400 + Math.random() * 100, 
-          pressure: 80 + Math.random() * 10, 
-          wear: 10 + Math.random() * 10 
+        FR: {
+          temp: 400 + Math.random() * 100,
+          pressure: 80 + Math.random() * 10,
+          wear: 10 + Math.random() * 10
         },
-        RL: { 
-          temp: 380 + Math.random() * 100, 
-          pressure: 78 + Math.random() * 10, 
-          wear: 8 + Math.random() * 10 
+        RL: {
+          temp: 380 + Math.random() * 100,
+          pressure: 78 + Math.random() * 10,
+          wear: 8 + Math.random() * 10
         },
-        RR: { 
-          temp: 380 + Math.random() * 100, 
-          pressure: 78 + Math.random() * 10, 
-          wear: 8 + Math.random() * 10 
+        RR: {
+          temp: 380 + Math.random() * 100,
+          pressure: 78 + Math.random() * 10,
+          wear: 8 + Math.random() * 10
         }
       };
       setBrakes(newBrakes);
 
-      // Add to history
+      // Add to history with stable ID
       const avgTemp = (newBrakes.FL.temp + newBrakes.FR.temp + newBrakes.RL.temp + newBrakes.RR.temp) / 4;
-      setTempHistory(prev => [...prev, { time: Date.now(), temp: avgTemp }].slice(-20));
-    }, 200);
-    return () => clearInterval(interval);
-  }, []);
+      setTempHistory(prev => [...prev, { id: historyId, time: Date.now(), temp: avgTemp }].slice(-20));
+      setHistoryId(id => id + 1);
+    }
+  }, [telemetryData]);
 
   const getTempColor = (temp: number) => {
     if (temp > 500) return '#ef4444';
@@ -206,20 +210,21 @@ export function BrakeSystemStatus() {
           {/* Temperature Trend */}
           <div className="flex-1">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={tempHistory}>
+              <LineChart data={tempHistory} key="brake-temp-chart">
                 <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                 <XAxis hide />
                 <YAxis stroke="#ef4444" domain={[300, 600]} tick={{ fontSize: 10 }} />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: '#000', border: '1px solid #ef4444' }}
                   labelStyle={{ color: '#ef4444' }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="temp" 
-                  stroke="#ef4444" 
+                <Line
+                  type="monotone"
+                  dataKey="temp"
+                  stroke="#ef4444"
                   strokeWidth={2}
                   dot={false}
+                  isAnimationActive={false}
                 />
               </LineChart>
             </ResponsiveContainer>

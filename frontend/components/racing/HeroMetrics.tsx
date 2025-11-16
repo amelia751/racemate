@@ -93,18 +93,24 @@ export default memo(function HeroMetrics() {
 
   return (
     <Card className="bg-black/40 border-cyan-500/30 h-full">
-      <CardContent className="pt-4 h-full">
-        <div className="text-cyan-400 text-xs font-bold mb-3 tracking-wider">CURRENT STATUS</div>
-        <div className="grid grid-cols-5 gap-3 h-[calc(100%-30px)]">
+      <CardContent className="pt-2 pb-2 h-full flex flex-col justify-center">
+        <div className="text-cyan-400 text-xs font-bold mb-2 tracking-wider">CURRENT STATUS</div>
+        <div className="grid grid-cols-5 gap-2 text-center">
           {metrics.map((metric) => (
-            <MetricDisplay
-              key={metric.label}
-              label={metric.label}
-              value={metric.value}
-              unit={metric.unit}
-              color={metric.color}
-              size={metric.size}
-            />
+            <div key={metric.label} className="flex flex-col items-center justify-center">
+              <div className="text-[9px] text-muted-foreground tracking-wider whitespace-nowrap">
+                {metric.label}
+              </div>
+              <div
+                className="text-2xl font-black font-mono leading-tight transition-all duration-200"
+                style={{ color: metric.color }}
+              >
+                {metric.value}
+              </div>
+              <div className="text-[8px] text-muted-foreground">
+                {metric.unit}
+              </div>
+            </div>
           ))}
         </div>
       </CardContent>

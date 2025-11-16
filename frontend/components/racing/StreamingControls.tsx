@@ -13,7 +13,11 @@ import { Play, Square, Zap, Settings } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCogniraceStore } from '@/lib/store';
 
-export default function StreamingControls() {
+interface StreamingControlsProps {
+  onStreamingChange?: (isStreaming: boolean) => void;
+}
+
+export default function StreamingControls({ onStreamingChange }: StreamingControlsProps) {
   const [isStreaming, setIsStreaming] = useState(false);
   const [dataRate, setDataRate] = useState(10); // Hz
   const { addDebugLog } = useCogniraceStore();
@@ -22,6 +26,7 @@ export default function StreamingControls() {
 
   const startStreaming = () => {
     setIsStreaming(true);
+    onStreamingChange?.(true);
     addDebugLog('info', 'Telemetry streaming started', { rate: dataRate });
     
     // Simulate telemetry updates
@@ -55,6 +60,7 @@ export default function StreamingControls() {
 
   const stopStreaming = () => {
     setIsStreaming(false);
+    onStreamingChange?.(false);
     if ((window as any).telemetryInterval) {
       clearInterval((window as any).telemetryInterval);
     }
