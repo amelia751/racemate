@@ -10,61 +10,69 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Card, CardContent } from '@/components/ui/card';
 import { useCogniraceStore } from '@/lib/store';
 
-// Fuel Consumption Over Time (Line Chart)
+// Fuel Consumption - Red Bull Style Vertical Bars
 export function FuelConsumptionChart() {
-  const [data, setData] = useState<any[]>([]);
+  const [fuelHistory, setFuelHistory] = useState<number[]>([35, 35, 35]);
   const { telemetryData } = useCogniraceStore();
-  
+
   useEffect(() => {
     if (telemetryData) {
-      const lap = telemetryData.lap || 13;
       const fuel = telemetryData.fuel_level || 35;
-      
-      setData(prev => {
-        const newData = [...prev, { lap, fuel }];
-        return newData.slice(-10); // Keep last 10 laps
-      });
+      setFuelHistory(prev => [...prev, fuel].slice(-3)); // Keep last 3 readings
     }
-  }, [telemetryData?.lap]);
+  }, [telemetryData?.fuel_level]);
 
   const currentFuel = telemetryData?.fuel_level || 0;
+  const maxFuel = 50;
+  const fuelPercentage = (currentFuel / maxFuel) * 100;
   const lapsRemaining = Math.floor(currentFuel / 2.5);
 
+  // Determine fuel color based on level
+  const getFuelColor = (percentage: number) => {
+    if (percentage > 80) return '#22c55e'; // Green - plenty
+    if (percentage > 50) return '#eab308'; // Yellow - good
+    if (percentage > 30) return '#fb923c'; // Orange - warning
+    return '#ef4444'; // Red - critical
+  };
+
+  const barColor = getFuelColor(fuelPercentage);
+
   return (
-    <Card className="bg-black/40 h-full">
-      <CardContent className="pt-3 pb-2 h-full flex flex-col">
-        <div className="flex items-center justify-between mb-2">
-          <div className="text-orange-400 text-xs font-bold tracking-wider">FUEL CONSUMPTION</div>
-          <div className="text-right">
-            <div className="text-orange-400 text-lg font-black font-mono">{currentFuel.toFixed(1)}L</div>
-            <div className="text-[10px] text-muted-foreground">~{lapsRemaining} laps</div>
+    <Card className="bg-black/40 h-full py-2">
+      <CardContent className="py-0 px-3 h-full flex flex-col">
+        <div className="text-orange-400 text-xs font-bold mb-1 tracking-wider">FUEL</div>
+
+        {/* Main fuel display area */}
+        <div className="flex-1 flex items-end justify-center gap-3">
+          {/* Fuel history bars - Vertical */}
+          <div className="flex items-end gap-2 h-full flex-1">
+            {fuelHistory.map((fuel, idx) => {
+              const percent = (fuel / maxFuel) * 100;
+              const color = getFuelColor(percent);
+              return (
+                <div key={idx} className="flex-1 flex flex-col items-center justify-end h-full">
+                  <div className="w-full bg-gray-800 rounded-t-sm overflow-hidden flex-1 relative mb-0.5">
+                    <div
+                      className="w-full transition-all duration-300 absolute bottom-0"
+                      style={{
+                        height: `${percent}%`,
+                        backgroundColor: color,
+                        opacity: 0.85
+                      }}
+                    />
+                  </div>
+                  <div className="text-[7px] text-muted-foreground">{Math.round(fuel)}L</div>
+                </div>
+              );
+            })}
           </div>
-        </div>
-        <div className="flex-1">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data}>
-              <defs>
-                <linearGradient id="fuelGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#fb923c" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#fb923c" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-              <XAxis dataKey="lap" stroke="#fb923c" tick={{ fontSize: 10 }} />
-              <YAxis stroke="#fb923c" domain={[0, 50]} tick={{ fontSize: 10 }} />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#000', border: '1px solid #fb923c' }}
-                labelStyle={{ color: '#fb923c' }}
-              />
-              <Area 
-                type="monotone" 
-                dataKey="fuel" 
-                stroke="#fb923c" 
-                strokeWidth={2}
-                fill="url(#fuelGradient)" 
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+
+          {/* Current fuel display */}
+          <div className="text-center">
+            <div className="text-orange-400 text-2xl font-black font-mono">{currentFuel.toFixed(0)}</div>
+            <div className="text-[7px] text-muted-foreground">L</div>
+            <div className="text-[7px] text-muted-foreground mt-0.5">{lapsRemaining}L</div>
+          </div>
         </div>
       </CardContent>
     </Card>

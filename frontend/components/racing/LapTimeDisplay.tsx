@@ -28,15 +28,17 @@ export default function LapTimeDisplay() {
         </div>
       </motion.div>
 
-      {/* Badges */}
-      <div className="flex flex-col gap-2 items-center">
-        <Badge variant="outline" className="text-lg px-3 py-2 bg-blue-500/20 border-blue-500 w-full justify-center">
+      {/* Badges - Single Line */}
+      <div className="flex gap-2 items-center justify-center">
+        <Badge variant="outline" className="text-sm px-2 py-1 bg-blue-500/20 border-blue-500">
           LAP {currentLap}
         </Badge>
-        <Badge variant="outline" className="text-lg px-3 py-2 bg-purple-500/20 border-purple-500 w-full justify-center">
+        <span className="text-muted-foreground">·</span>
+        <Badge variant="outline" className="text-sm px-2 py-1 bg-purple-500/20 border-purple-500">
           P{position}
         </Badge>
-        <Badge variant="outline" className="text-lg px-3 py-2 bg-cyan-500/20 border-cyan-500 w-full justify-center">
+        <span className="text-muted-foreground">·</span>
+        <Badge variant="outline" className="text-sm px-2 py-1 bg-cyan-500/20 border-cyan-500">
           S{sector}
         </Badge>
       </div>

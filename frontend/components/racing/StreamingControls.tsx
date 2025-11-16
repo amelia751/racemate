@@ -20,6 +20,7 @@ interface StreamingControlsProps {
 export default function StreamingControls({ onStreamingChange }: StreamingControlsProps) {
   const [isStreaming, setIsStreaming] = useState(false);
   const [dataRate, setDataRate] = useState(10); // Hz
+  const [currentFuel, setCurrentFuel] = useState(50); // Start with full tank
   const { addDebugLog } = useCogniraceStore();
 
   const { setTelemetry } = useCogniraceStore();
@@ -27,30 +28,39 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
   const startStreaming = () => {
     setIsStreaming(true);
     onStreamingChange?.(true);
+    setCurrentFuel(50); // Reset fuel to full tank when streaming starts
     addDebugLog('info', 'Telemetry streaming started', { rate: dataRate });
-    
+
     // Simulate telemetry updates
     const interval = setInterval(() => {
-      const telemetry = {
-        speed: 150 + Math.random() * 50,
-        rpm: 7000 + Math.random() * 2000,
-        nmot: 7000 + Math.random() * 2000,
-        gear: Math.floor(Math.random() * 6) + 1,
-        throttle: 60 + Math.random() * 40,
-        aps: 60 + Math.random() * 40,
-        lap: 13,
-        fuel_level: 35 - Math.random() * 0.5,
-        cum_brake_energy: 25000 + Math.random() * 5000,
-        cum_lateral_load: 45000 + Math.random() * 10000,
-        air_temp: 26 + Math.random() * 2,
-      };
-      
-      // Update store with real data
-      setTelemetry(telemetry);
-      addDebugLog('success', 'Telemetry updated', { 
-        speed: Math.round(telemetry.speed),
-        rpm: Math.round(telemetry.rpm || 0),
-        gear: telemetry.gear 
+      // Fuel decreases by ~0.3-0.7L per update (noticeable decrease)
+      setCurrentFuel(prev => Math.max(0, prev - (0.3 + Math.random() * 0.4)));
+
+      setCurrentFuel(fuel => {
+        const telemetry = {
+          speed: 150 + Math.random() * 50,
+          rpm: 7000 + Math.random() * 2000,
+          nmot: 7000 + Math.random() * 2000,
+          gear: Math.floor(Math.random() * 6) + 1,
+          throttle: 60 + Math.random() * 40,
+          aps: 60 + Math.random() * 40,
+          lap: 13,
+          fuel_level: fuel,
+          cum_brake_energy: 25000 + Math.random() * 5000,
+          cum_lateral_load: 45000 + Math.random() * 10000,
+          air_temp: 26 + Math.random() * 2,
+        };
+
+        // Update store with real data
+        setTelemetry(telemetry);
+        addDebugLog('success', 'Telemetry updated', {
+          speed: Math.round(telemetry.speed),
+          rpm: Math.round(telemetry.rpm || 0),
+          gear: telemetry.gear,
+          fuel: fuel.toFixed(1)
+        });
+
+        return fuel;
       });
     }, 1000 / dataRate);
 
@@ -73,7 +83,7 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5 }}
     >
-      <Card className="bg-gradient-to-r from-cyan-900/30 to-purple-900/30 border-cyan-500/30 backdrop-blur-sm">
+      <Card className="bg-gradient-to-r from-cyan-900/30 to-purple-900/30 backdrop-blur-sm">
         <CardContent className="pt-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -136,7 +146,7 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
               <Button
                 variant="outline"
                 size="sm"
-                className="text-xs border-cyan-500/30 hover:border-cyan-500"
+                className="text-xs"
                 onClick={() => addDebugLog('info', 'Lap 13 started')}
               >
                 📍 Lap 13
@@ -144,7 +154,7 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
               <Button
                 variant="outline"
                 size="sm"
-                className="text-xs border-yellow-500/30 hover:border-yellow-500"
+                className="text-xs"
                 onClick={() => addDebugLog('warn', 'Pit window open')}
               >
                 🏁 Pit
@@ -152,7 +162,7 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
               <Button
                 variant="outline"
                 size="sm"
-                className="text-xs border-red-500/30 hover:border-red-500"
+                className="text-xs"
                 onClick={() => addDebugLog('error', 'FCY deployed')}
               >
                 🚨 FCY
