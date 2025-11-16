@@ -121,12 +121,12 @@ export default function RacingDashboard() {
             </div>
 
             {/* Advanced System Visualizations */}
-            <div className="grid grid-cols-2 gap-4 h-[140px]">
+            <div className="grid grid-cols-2 gap-4 h-[120px]">
               <FuelConsumptionChart />
               <TireTemperatureDisplay />
             </div>
 
-            <div className="h-[140px]">
+            <div className="h-[120px]">
               <BrakeSystemStatus />
             </div>
 

@@ -31,12 +31,12 @@ export function FuelConsumptionChart() {
   const lapsRemaining = Math.floor(currentFuel / 2.5);
 
   return (
-    <Card className="bg-black/40  h-full">
-      <CardContent className="pt-3 h-full flex flex-col">
+    <Card className="bg-black/40 h-full">
+      <CardContent className="pt-3 pb-2 h-full flex flex-col">
         <div className="flex items-center justify-between mb-2">
           <div className="text-orange-400 text-xs font-bold tracking-wider">FUEL CONSUMPTION</div>
           <div className="text-right">
-            <div className="text-orange-400 text-2xl font-black font-mono">{currentFuel.toFixed(1)}L</div>
+            <div className="text-orange-400 text-lg font-black font-mono">{currentFuel.toFixed(1)}L</div>
             <div className="text-[10px] text-muted-foreground">~{lapsRemaining} laps</div>
           </div>
         </div>
@@ -71,13 +71,13 @@ export function FuelConsumptionChart() {
   );
 }
 
-// Tire Temperature Heat Map (4 Corners)
+// Tire Temperature - Circular Vehicle View (Red Bull Style)
 export function TireTemperatureDisplay() {
   const [temps, setTemps] = useState({
-    FL: { inner: 85, middle: 88, outer: 90 },
-    FR: { inner: 86, middle: 89, outer: 91 },
-    RL: { inner: 82, middle: 85, outer: 87 },
-    RR: { inner: 83, middle: 86, outer: 88 }
+    FL: 88,
+    FR: 89,
+    RL: 85,
+    RR: 86
   });
   const { telemetryData } = useCogniraceStore();
 
@@ -85,64 +85,62 @@ export function TireTemperatureDisplay() {
     // Only update when streaming (when telemetryData is being updated)
     if (telemetryData) {
       setTemps({
-        FL: {
-          inner: 80 + Math.random() * 15,
-          middle: 85 + Math.random() * 15,
-          outer: 88 + Math.random() * 15
-        },
-        FR: {
-          inner: 80 + Math.random() * 15,
-          middle: 85 + Math.random() * 15,
-          outer: 88 + Math.random() * 15
-        },
-        RL: {
-          inner: 78 + Math.random() * 15,
-          middle: 83 + Math.random() * 15,
-          outer: 85 + Math.random() * 15
-        },
-        RR: {
-          inner: 78 + Math.random() * 15,
-          middle: 83 + Math.random() * 15,
-          outer: 85 + Math.random() * 15
-        }
+        FL: 80 + Math.random() * 20,
+        FR: 80 + Math.random() * 20,
+        RL: 78 + Math.random() * 20,
+        RR: 78 + Math.random() * 20
       });
     }
   }, [telemetryData]);
 
   const getTempColor = (temp: number) => {
-    if (temp > 95) return '#ef4444';
-    if (temp > 85) return '#22c55e';
-    if (temp > 75) return '#fb923c';
-    return '#3b82f6';
+    if (temp > 100) return '#dc2626'; // Deep red - overheating
+    if (temp > 95) return '#ef4444';  // Red
+    if (temp > 85) return '#eab308';  // Yellow
+    if (temp > 75) return '#22c55e';  // Green
+    return '#0ea5e9';                 // Blue - cold
   };
 
-  const renderTire = (position: string, temps: { inner: number, middle: number, outer: number }) => (
-    <div className="flex flex-col items-center gap-1">
-      <div className="text-[10px] text-muted-foreground font-bold">{position}</div>
-      <div className="flex gap-0.5">
-        {[temps.inner, temps.middle, temps.outer].map((temp, idx) => (
-          <div 
-            key={idx}
-            className="w-6 h-14 rounded-sm transition-colors duration-300"
-            style={{ backgroundColor: getTempColor(temp) }}
-          />
-        ))}
-      </div>
-      <div className="text-xs font-mono font-bold" style={{ color: getTempColor(temps.middle) }}>
-        {Math.round(temps.middle)}°C
-      </div>
-    </div>
-  );
+  // SVG circle positions: FL (top-left), FR (top-right), RL (bottom-left), RR (bottom-right)
+  const tirePositions = [
+    { key: 'FL', label: 'FL', x: 30, y: 30 },
+    { key: 'FR', label: 'FR', x: 170, y: 30 },
+    { key: 'RL', label: 'RL', x: 30, y: 170 },
+    { key: 'RR', label: 'RR', x: 170, y: 170 }
+  ];
 
   return (
-    <Card className="bg-black/40  h-full">
-      <CardContent className="pt-3 h-full flex flex-col">
-        <div className="text-cyan-400 text-xs font-bold mb-3 tracking-wider">TIRE TEMPERATURE</div>
-        <div className="flex-1 grid grid-cols-2 gap-4 items-center justify-items-center">
-          {renderTire('FL', temps.FL)}
-          {renderTire('FR', temps.FR)}
-          {renderTire('RL', temps.RL)}
-          {renderTire('RR', temps.RR)}
+    <Card className="bg-black/40 h-full">
+      <CardContent className="pt-3 pb-2 h-full flex flex-col">
+        <div className="text-cyan-400 text-xs font-bold mb-2 tracking-wider">TIRE TEMPERATURE</div>
+
+        {/* 2x2 Grid layout for tires */}
+        <div className="grid grid-cols-2 gap-4 flex-1 p-2">
+          {tirePositions.map((pos) => {
+            const temp = temps[pos.key as keyof typeof temps];
+            const color = getTempColor(temp);
+
+            // Determine temperature status
+            let status = 'Cold';
+            if (temp > 95) status = 'Hot';
+            else if (temp > 85) status = 'Warm';
+            else if (temp > 75) status = 'Good';
+
+            return (
+              <div key={pos.key} className="flex items-center mb-2">
+                <div
+                  className="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0"
+                  style={{ backgroundColor: color, opacity: 0.85, padding: '12px' }}
+                >
+                  <div className="text-2xl font-bold text-white text-center">{Math.round(temp)}</div>
+                </div>
+                <div className="text-left flex-1 ml-6">
+                  <div className="text-[10px] text-muted-foreground font-bold">{pos.label}</div>
+                  <div className="text-[8px] text-muted-foreground">{status}</div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </CardContent>
     </Card>
@@ -203,8 +201,8 @@ export function BrakeSystemStatus() {
   };
 
   return (
-    <Card className="bg-black/40  h-full">
-      <CardContent className="pt-3 h-full flex flex-col">
+    <Card className="bg-black/40 h-full">
+      <CardContent className="pt-3 pb-2 h-full flex flex-col">
         <div className="text-red-400 text-xs font-bold mb-2 tracking-wider">BRAKE SYSTEM</div>
         <div className="flex-1 flex gap-3">
           {/* Temperature Trend */}
@@ -229,17 +227,17 @@ export function BrakeSystemStatus() {
               </LineChart>
             </ResponsiveContainer>
           </div>
-          
+
           {/* Corner Status */}
           <div className="flex flex-col gap-1 justify-center">
             {Object.entries(brakes).map(([corner, data]) => (
               <div key={corner} className="flex items-center gap-2 text-xs">
                 <span className="w-6 text-muted-foreground font-bold">{corner}</span>
-                <div 
-                  className="w-12 h-3 rounded-full"
+                <div
+                  className="w-10 h-2.5 rounded-full"
                   style={{ backgroundColor: getTempColor(data.temp) }}
                 />
-                <span className="font-mono font-bold" style={{ color: getTempColor(data.temp) }}>
+                <span className="font-mono font-bold text-[10px]" style={{ color: getTempColor(data.temp) }}>
                   {Math.round(data.temp)}°C
                 </span>
               </div>
