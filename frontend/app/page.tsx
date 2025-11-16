@@ -1,7 +1,7 @@
 'use client';
 
-import RaceDashboard from '@/components/RaceDashboard';
+import RacingDashboard from '@/components/racing/RacingDashboard';
 
 export default function Home() {
-  return <RaceDashboard />;
+  return <RacingDashboard />;
 }

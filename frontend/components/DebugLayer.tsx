@@ -13,6 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Copy, Trash2, X, Maximize2, Minimize2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface LogEntry {
   timestamp: Date;
@@ -227,34 +228,51 @@ export default function DebugLayer() {
 
   if (isMinimized) {
     return (
-      <div className="fixed bottom-4 right-4 z-50">
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        className="fixed bottom-6 right-6 z-[9999]"
+      >
         <Button
           onClick={() => setIsMinimized(false)}
-          variant="default"
+          className="rounded-full shadow-2xl w-16 h-16 bg-gradient-to-br from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500"
           size="lg"
-          className="rounded-full shadow-lg"
         >
-          🐛 Debug ({logs.length})
+          <div className="text-center">
+            <div className="text-2xl">🐛</div>
+            <div className="text-xs">{logs.length}</div>
+          </div>
         </Button>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className={`fixed ${isExpanded ? 'inset-4' : 'bottom-4 right-4 w-[600px] h-[400px]'} z-50 transition-all`}>
-      <Card className="h-full flex flex-col shadow-2xl border-2 border-primary">
-        <CardHeader className="pb-3 bg-primary/10">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className={`fixed ${isExpanded ? 'inset-8' : 'bottom-6 right-6 w-[700px] h-[500px]'} z-[9999] transition-all`}
+    >
+      <Card className="h-full flex flex-col shadow-2xl border-2 border-cyan-500 bg-black/95 backdrop-blur-xl">
+        <CardHeader className="pb-3 bg-gradient-to-r from-cyan-900/50 to-purple-900/50 border-b border-cyan-500/30">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <span className="text-2xl">🐛</span>
-              <span>Debug Console</span>
-              <Badge variant="outline">{filteredLogs.length} / {logs.length}</Badge>
+            <CardTitle className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-2xl">
+                🐛
+              </div>
+              <div>
+                <div className="text-lg font-black tracking-tight text-cyan-400">DEBUG CONSOLE</div>
+                <div className="text-xs text-muted-foreground">
+                  {filteredLogs.length} / {logs.length} events
+                </div>
+              </div>
             </CardTitle>
             <div className="flex items-center gap-2">
               <Button
                 onClick={() => setIsExpanded(!isExpanded)}
                 variant="ghost"
                 size="sm"
+                className="hover:bg-cyan-500/20"
               >
                 {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
               </Button>
@@ -262,6 +280,7 @@ export default function DebugLayer() {
                 onClick={() => setIsMinimized(true)}
                 variant="ghost"
                 size="sm"
+                className="hover:bg-red-500/20"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -418,7 +437,7 @@ export default function DebugLayer() {
           </Tabs>
         </CardContent>
       </Card>
-    </div>
+    </motion.div>
   );
 }
 
