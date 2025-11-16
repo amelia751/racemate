@@ -55,12 +55,12 @@ app.add_middleware(
 )
 
 # Import routers
-from routers import predict, health, vapi_tools
+from routers import predict, health, realtime
 
 # Include routers
 app.include_router(health.router, tags=["health"])
 app.include_router(predict.router, prefix="/predict", tags=["predictions"])
-app.include_router(vapi_tools.router, tags=["vapi-tools"])
+app.include_router(realtime.router, prefix="/realtime", tags=["realtime"])
 
 
 @app.exception_handler(Exception)

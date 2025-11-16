@@ -9,16 +9,16 @@ import json
 import os
 import logging
 from pathlib import Path
-
-try:
-    import google.generativeai as genai
-    from dotenv import load_dotenv
-    GEMINI_AVAILABLE = True
-except ImportError:
-    GEMINI_AVAILABLE = False
+from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv(os.path.join(os.path.dirname(__file__), '../.env.local'))
+
+try:
+    import google.generativeai as genai
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(

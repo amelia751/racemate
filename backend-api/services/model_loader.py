@@ -12,6 +12,12 @@ from google.oauth2 import service_account
 from config.settings import settings
 import time
 import os
+import sys
+
+# Add ml-pipeline to path so we can unpickle sklearn models with custom classes
+ml_pipeline_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../ml-pipeline'))
+if ml_pipeline_path not in sys.path:
+    sys.path.insert(0, ml_pipeline_path)
 
 class ModelLoader:
     """Load and cache ML models from GCS"""
@@ -43,12 +49,14 @@ class ModelLoader:
         local_path = self.cache_dir / model_name
         local_path.mkdir(parents=True, exist_ok=True)
         
-        # Download model.pth
-        model_file = local_path / "model.pth"
+        # Check if any model file exists in cache
+        model_file_pth = local_path / "model.pth"
+        model_file_pkl = local_path / "model.pkl"
         
-        if model_file.exists():
+        if model_file_pth.exists() or model_file_pkl.exists():
             # Check if cached file is still fresh
-            age = time.time() - model_file.stat().st_mtime
+            existing_file = model_file_pth if model_file_pth.exists() else model_file_pkl
+            age = time.time() - existing_file.stat().st_mtime
             if age < settings.model_cache_ttl:
                 print(f"  Using cached model: {model_name}")
                 return local_path
@@ -58,9 +66,19 @@ class ModelLoader:
         try:
             bucket = self.storage_client.bucket(settings.gcs_bucket_models)
             
-            # Download model checkpoint
-            blob = bucket.blob(f"{model_name}/model.pth")
-            blob.download_to_filename(str(model_file))
+            # Try downloading .pth first (PyTorch), then .pkl (sklearn)
+            try:
+                blob_pth = bucket.blob(f"{model_name}/model.pth")
+                if blob_pth.exists():
+                    blob_pth.download_to_filename(str(model_file_pth))
+                else:
+                    # Try .pkl
+                    blob_pkl = bucket.blob(f"{model_name}/model.pkl")
+                    blob_pkl.download_to_filename(str(model_file_pkl))
+            except:
+                # Fallback to .pkl
+                blob_pkl = bucket.blob(f"{model_name}/model.pkl")
+                blob_pkl.download_to_filename(str(model_file_pkl))
             
             # Download metrics if available
             metrics_blob = bucket.blob(f"{model_name}/metrics.pkl")
@@ -88,34 +106,72 @@ class ModelLoader:
         # Download if needed
         model_path = self.download_model(model_name)
         
-        # Load checkpoint
-        checkpoint_path = model_path / "model.pth"
-        checkpoint = torch.load(
-            checkpoint_path,
-            map_location='cpu',
-            weights_only=False
-        )
+        # Try both .pth and .pkl extensions
+        checkpoint_path_pth = model_path / "model.pth"
+        checkpoint_path_pkl = model_path / "model.pkl"
+        
+        model_data = {}
+        metrics = {}
         
         # Load metrics
-        metrics = {}
         metrics_path = model_path / "metrics.pkl"
         if metrics_path.exists():
-            with open(metrics_path, 'rb') as f:
-                metrics = pickle.load(f)
+            try:
+                with open(metrics_path, 'rb') as f:
+                    metrics = pickle.load(f)
+            except:
+                print(f"  ⚠️  Could not load metrics")
         
-        # Extract model state and metadata
-        model_state = checkpoint.get('model_state_dict', checkpoint)
-        scaler = checkpoint.get('scaler')
-        feature_cols = checkpoint.get('feature_cols', [])
-        
-        # Initialize model (will be done by specific prediction services)
-        model_data = {
-            'model_state': model_state,
-            'scaler': scaler,
-            'feature_cols': feature_cols,
-            'metrics': metrics,
-            'checkpoint': checkpoint
-        }
+        # Try PyTorch model first
+        if checkpoint_path_pth.exists():
+            try:
+                checkpoint = torch.load(
+                    checkpoint_path_pth,
+                    map_location='cpu',
+                    weights_only=False
+                )
+                
+                model_data = {
+                    'model_state': checkpoint.get('model_state_dict', checkpoint),
+                    'scaler': checkpoint.get('scaler'),
+                    'feature_cols': checkpoint.get('feature_cols', []),
+                    'metrics': metrics,
+                    'checkpoint': checkpoint,
+                    'type': 'pytorch'
+                }
+                print(f"  ✓ Loaded {model_name} (PyTorch)")
+                
+            except Exception as e:
+                print(f"  ✗ Error loading PyTorch model: {e}")
+                return None
+                
+        # Try sklearn model
+        elif checkpoint_path_pkl.exists():
+            try:
+                # Try with joblib first (more robust for sklearn)
+                try:
+                    import joblib
+                    model = joblib.load(checkpoint_path_pkl)
+                except:
+                    # Fall back to pickle
+                    with open(checkpoint_path_pkl, 'rb') as f:
+                        model = pickle.load(f)
+                
+                model_data = {
+                    'model': model,
+                    'metrics': metrics,
+                    'type': 'sklearn'
+                }
+                print(f"  ✓ Loaded {model_name} (sklearn)")
+                
+            except Exception as e:
+                print(f"  ✗ Error loading sklearn model: {e}")
+                import traceback
+                traceback.print_exc()
+                return None
+        else:
+            print(f"  ✗ No model file found in {model_path}")
+            return None
         
         # Cache
         self.loaded_models[model_name] = model_data
@@ -124,9 +180,8 @@ class ModelLoader:
             'metrics': metrics
         }
         
-        print(f"  ✓ Loaded {model_name}")
-        if feature_cols:
-            print(f"    Features: {len(feature_cols)}")
+        if model_data.get('feature_cols'):
+            print(f"    Features: {len(model_data['feature_cols'])}")
         if metrics:
             print(f"    Metrics: {list(metrics.keys())[:3]}")
         

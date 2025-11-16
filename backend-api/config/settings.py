@@ -25,10 +25,9 @@ class Settings(BaseSettings):
     prediction_timeout: int = 30
     batch_size_limit: int = 32
     
-    # Vapi AI Configuration
-    vapi_private_key: str = ""
-    vapi_public_key: str = ""
-    vapi_assistant_id: str = "camry"
+    # Google/Gemini Configuration
+    google_api_key: str = ""
+    gemini_model: str = "gemini-2.0-flash-exp"
     
     class Config:
         env_file = ".env.local"

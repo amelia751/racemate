@@ -15,7 +15,7 @@ import StreamingControls from './StreamingControls';
 import { ThrottleBrakeTimeSeries, GForceTimeSeries } from './RedBullStyleCharts';
 import { FuelConsumptionChart, TireTemperatureDisplay, BrakeSystemStatus } from './EnhancedVisualizations';
 import HeroMetrics from './HeroMetrics';
-import VapiVoiceChat from '@/components/VapiVoiceChat';
+import VoiceStrategist from '@/components/VoiceStrategist';
 import DebugLayer from '@/components/DebugLayer';
 
 export default function RacingDashboard() {
@@ -37,7 +37,7 @@ export default function RacingDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-hidden">
+    <div className="h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-hidden flex flex-col">
       {/* Animated Background Grid */}
       <div className="fixed inset-0 pointer-events-none opacity-10">
         <div className="absolute inset-0" style={{
@@ -69,22 +69,13 @@ export default function RacingDashboard() {
               )}
             </div>
             
-            <div className="flex items-center gap-6">
-              <div className="text-right">
-                <div className="text-xs text-muted-foreground">TOYOTA GR CUP</div>
-                <div className="text-sm font-bold text-cyan-400">SERIES 2025</div>
-              </div>
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-500 to-yellow-500 flex items-center justify-center font-black">
-                AI
-              </div>
-            </div>
           </div>
         </div>
       </motion.header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-6 relative z-10">
-        <div className="grid grid-cols-12 gap-6 h-[calc(100vh-140px)]">
+      <div className="container mx-auto px-6 py-6 relative z-10 flex-1">
+        <div className="grid grid-cols-12 gap-6 h-full">
           
           {/* LEFT COLUMN - Telemetry Charts */}
           <motion.div
@@ -151,7 +142,7 @@ export default function RacingDashboard() {
                 </div>
               </div>
               <div className="flex-1 overflow-hidden">
-                <VapiVoiceChat />
+                <VoiceStrategist />
               </div>
             </Card>
           </motion.div>

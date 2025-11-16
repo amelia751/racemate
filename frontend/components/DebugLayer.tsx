@@ -94,8 +94,8 @@ export default function DebugLayer() {
       platform: navigator.platform,
       screenSize: `${window.screen.width}x${window.screen.height}`,
       windowSize: `${window.innerWidth}x${window.innerHeight}`,
-      vapiPublicKey: process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY?.substring(0, 8) + '...',
-      vapiAssistantId: process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID,
+      googleApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY?.substring(0, 8) + '...',
+      geminiModel: process.env.NEXT_PUBLIC_GEMINI_MODEL || 'gemini-2.0-flash-exp',
       backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_API_URL
     };
     setSystemInfo(info);
@@ -133,37 +133,34 @@ export default function DebugLayer() {
     debugLog.success('DEBUG_LAYER', 'Logs copied to clipboard');
   };
 
-  const testVapiConnection = async () => {
-    debugLog.info('VAPI_TEST', 'Testing Vapi connection...');
+  const testGeminiConnection = async () => {
+    debugLog.info('GEMINI_TEST', 'Testing Gemini connection...');
     
     try {
-      // Check if Vapi SDK loaded
-      debugLog.info('VAPI_TEST', 'Checking Vapi SDK...');
-      const Vapi = (await import('@vapi-ai/web')).default;
-      debugLog.success('VAPI_TEST', 'Vapi SDK loaded successfully');
+      // Check if Google AI SDK loaded
+      debugLog.info('GEMINI_TEST', 'Checking Google AI SDK...');
+      const { GoogleGenerativeAI } = await import('@google/generative-ai');
+      debugLog.success('GEMINI_TEST', 'Google AI SDK loaded successfully');
       
-      // Check public key
-      const publicKey = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
-      if (!publicKey) {
-        debugLog.error('VAPI_TEST', 'VAPI PUBLIC KEY IS MISSING!');
+      // Check API key
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+      if (!apiKey) {
+        debugLog.error('GEMINI_TEST', 'GOOGLE API KEY IS MISSING!');
         return;
       }
-      debugLog.success('VAPI_TEST', `Public key found: ${publicKey.substring(0, 8)}...`);
+      debugLog.success('GEMINI_TEST', `API key found: ${apiKey.substring(0, 8)}...`);
       
       // Try to create instance
-      const vapi = new Vapi(publicKey);
-      debugLog.success('VAPI_TEST', 'Vapi instance created successfully');
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+      debugLog.success('GEMINI_TEST', 'Gemini model initialized successfully');
       
-      // Check assistant ID
-      const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
-      debugLog.info('VAPI_TEST', `Assistant ID: ${assistantId}`);
-      
-      debugLog.success('VAPI_TEST', 'All Vapi checks passed!');
+      debugLog.success('GEMINI_TEST', 'All Gemini checks passed!');
       
     } catch (error: any) {
-      debugLog.error('VAPI_TEST', 'Vapi connection test failed', {
+      debugLog.error('GEMINI_TEST', 'Gemini connection test failed', {
         message: error.message,
-        stack: error.stack
+        stack: error.stack?.substring(0, 200)
       });
     }
   };
@@ -413,8 +410,8 @@ export default function DebugLayer() {
               <div className="space-y-2">
                 <Card>
                   <CardContent className="pt-4 space-y-2">
-                    <Button onClick={testVapiConnection} className="w-full" size="sm">
-                      🔌 Test Vapi Connection
+                    <Button onClick={testGeminiConnection} className="w-full" size="sm">
+                      🔌 Test Gemini Connection
                     </Button>
                     <Button onClick={testMicrophoneAccess} className="w-full" size="sm">
                       🎤 Test Microphone Access
