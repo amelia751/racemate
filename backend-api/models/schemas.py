@@ -19,7 +19,7 @@ class PredictionResponse(BaseModel):
 class FuelPredictionRequest(BaseModel):
     """Fuel consumption prediction request"""
     speed: float = Field(..., description="Speed in km/h", ge=0, le=300)
-    nmot: float = Field(..., description="Engine RPM", ge=0, le=10000)
+    nmot: float = Field(..., description="Engine RPM", ge=0, le=13000)  # Allow for high RPM scenarios
     gear: int = Field(..., description="Current gear", ge=1, le=7)
     aps: float = Field(..., description="Throttle position %", ge=0, le=100)
     lap: int = Field(..., description="Lap number", ge=1)

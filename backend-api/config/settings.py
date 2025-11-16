@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     prediction_timeout: int = 30
     batch_size_limit: int = 32
     
+    # Vapi AI Configuration
+    vapi_private_key: str = ""
+    vapi_public_key: str = ""
+    vapi_assistant_id: str = "camry"
+    
     class Config:
         env_file = ".env.local"
         case_sensitive = False
