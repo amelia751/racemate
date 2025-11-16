@@ -172,8 +172,7 @@ export default function VoiceChatInterface() {
         <div className="py-4 space-y-4 max-w-3xl mx-auto">
           {messages.length === 0 && isAgentReady && (
             <Card className="border-dashed">
-              <CardContent className="pt-6 text-center space-y-3">
-                <div className="text-5xl">🎙️</div>
+              <CardContent className="pt-6 text-center space-y-2">
                 <p className="text-muted-foreground text-sm">
                   Waiting for agent greeting...
                 </p>
@@ -331,7 +330,7 @@ export default function VoiceChatInterface() {
           {/* Status Text */}
           <p className="text-center text-xs text-muted-foreground mt-3">
             {isListening ? (
-              <span className="text-primary font-medium">🎤 Listening...</span>
+              <span className="text-primary font-medium">Listening...</span>
             ) : isAgentReady ? (
               'Tap the mic to start talking'
             ) : (

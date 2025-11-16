@@ -27,15 +27,9 @@ export default function MessageDisplay() {
     <Card className="h-[500px] flex flex-col">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between">
-          <span className="flex items-center gap-2">
-            <span className="text-2xl">💬</span>
-            Conversation
-          </span>
-          <Badge variant="outline">{messages.length} messages</Badge>
+          <span>Chat</span>
+          <Badge variant="outline" className="text-xs">{messages.length}</Badge>
         </CardTitle>
-        <CardDescription>
-          Strategic dialogue with AI race engineer
-        </CardDescription>
       </CardHeader>
 
       <ScrollArea className="flex-1">
@@ -43,13 +37,12 @@ export default function MessageDisplay() {
           {messages.length === 0 ? (
             <Card className="border-dashed">
               <CardContent className="pt-6">
-                <div className="text-center space-y-3">
-                  <div className="text-5xl">💭</div>
+                <div className="text-center space-y-2">
                   <p className="text-muted-foreground text-sm">
                     No messages yet
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Connect to the agent and start a conversation
+                    Connect to start a conversation
                   </p>
                 </div>
               </CardContent>
@@ -61,20 +54,11 @@ export default function MessageDisplay() {
                   // Driver message (right-aligned)
                   <div className="flex justify-end">
                     <Card className="max-w-[80%] border-primary/30 bg-primary/10">
-                      <CardContent className="pt-4 pb-3">
-                        <div className="flex items-start gap-2">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <Badge variant="default" className="text-xs">
-                                👤 YOU
-                              </Badge>
-                              <span className="text-xs text-muted-foreground font-mono">
-                                {new Date(msg.timestamp).toLocaleTimeString()}
-                              </span>
-                            </div>
-                            <p className="text-sm">{msg.content}</p>
-                          </div>
-                        </div>
+                      <CardContent className="pt-3 pb-3 px-4">
+                        <p className="text-sm">{msg.content}</p>
+                        <span className="text-xs text-muted-foreground mt-1 block">
+                          {new Date(msg.timestamp).toLocaleTimeString()}
+                        </span>
                       </CardContent>
                     </Card>
                   </div>
@@ -82,20 +66,11 @@ export default function MessageDisplay() {
                   // Agent message (left-aligned)
                   <div className="flex justify-start">
                     <Card className="max-w-[80%] border-green-500/30 bg-green-500/10">
-                      <CardContent className="pt-4 pb-3">
-                        <div className="flex items-start gap-2">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <Badge variant="secondary" className="text-xs">
-                                🤖 AI STRATEGIST
-                              </Badge>
-                              <span className="text-xs text-muted-foreground font-mono">
-                                {new Date(msg.timestamp).toLocaleTimeString()}
-                              </span>
-                            </div>
-                            <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                          </div>
-                        </div>
+                      <CardContent className="pt-3 pb-3 px-4">
+                        <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                        <span className="text-xs text-muted-foreground mt-1 block">
+                          {new Date(msg.timestamp).toLocaleTimeString()}
+                        </span>
                       </CardContent>
                     </Card>
                   </div>
@@ -109,18 +84,6 @@ export default function MessageDisplay() {
         </CardContent>
       </ScrollArea>
 
-      <Separator />
-
-      {/* Footer Stats */}
-      <CardContent className="pt-3 pb-4">
-        <div className="flex justify-between items-center text-xs text-muted-foreground">
-          <span>Total Messages: {messages.length}</span>
-          <span>
-            Driver: {messages.filter(m => m.sender === 'driver').length} | 
-            Agent: {messages.filter(m => m.sender === 'agent').length}
-          </span>
-        </div>
-      </CardContent>
     </Card>
   );
 }

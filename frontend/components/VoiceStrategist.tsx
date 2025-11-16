@@ -79,11 +79,9 @@ export default function VoiceStrategist() {
             }
             
             addRecommendation(type, strategy, events);
-            
-            setCurrentStatus(`${eventCount} event(s) detected - analyzing`);
           } else if (data.type === 'status') {
             // No events, all nominal
-            setCurrentStatus('All systems nominal');
+            setCurrentStatus('Monitoring');
           }
         } catch (e) {
           console.error('[WebSocket] Parse error:', e);
@@ -190,22 +188,17 @@ export default function VoiceStrategist() {
       <div className="px-4 py-3 bg-gradient-to-r from-cyan-900/50 to-purple-900/50 border-b border-cyan-500/30 flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
-              <Bot className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="font-bold text-cyan-400">AI RACE STRATEGIST</h2>
-              <p className="text-xs text-muted-foreground">{currentStatus}</p>
-            </div>
+            <Activity className="w-4 h-4 text-cyan-400" />
+            <p className="text-sm font-medium">{recommendations.length} alert{recommendations.length !== 1 ? 's' : ''}</p>
           </div>
           {isConnected ? (
-            <Badge variant="default" className="bg-green-500 animate-pulse">
-              <Wifi className="w-3 h-3 mr-1" />
+            <Badge variant="default" className="bg-green-500 animate-pulse text-xs gap-1">
+              <Wifi className="w-3 h-3" />
               Connected
             </Badge>
           ) : (
-            <Badge variant="destructive">
-              <WifiOff className="w-3 h-3 mr-1" />
+            <Badge variant="destructive" className="text-xs gap-1">
+              <WifiOff className="w-3 h-3" />
               Offline
             </Badge>
           )}
@@ -221,9 +214,9 @@ export default function VoiceStrategist() {
               <CardContent className="pt-6 text-center">
                 <Bot className="w-12 h-12 mx-auto mb-3 text-cyan-400 opacity-50" />
                 <p className="text-sm text-muted-foreground mb-2">
-                  {isConnected 
-                    ? "🎯 Monitoring active - AI will alert on critical events"
-                    : "⚠️ Connecting to AI backend..."}
+                  {isConnected
+                    ? "Monitoring active - AI will alert on critical events"
+                    : "Connecting to AI backend..."}
                 </p>
                 {isConnected && (
                   <p className="text-xs text-muted-foreground/70">
@@ -284,13 +277,6 @@ export default function VoiceStrategist() {
         </ScrollArea>
       </div>
 
-      {/* Footer Info */}
-      <div className="px-4 py-2 bg-black/20 border-t border-cyan-500/20 flex-shrink-0">
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>Event-Driven AI • 8 ML Models</span>
-          <span>{recommendations.length} recommendation(s)</span>
-        </div>
-      </div>
     </div>
   );
 }
