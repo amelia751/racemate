@@ -92,7 +92,7 @@ export default memo(function HeroMetrics() {
   ];
 
   return (
-    <Card className="bg-black/40 border-cyan-500/30 h-full">
+    <Card className="bg-black/40 h-full">
       <CardContent className="pt-2 pb-2 h-full flex flex-col justify-center">
         <div className="text-cyan-400 text-xs font-bold mb-2 tracking-wider">CURRENT STATUS</div>
         <div className="grid grid-cols-5 gap-2 text-center">

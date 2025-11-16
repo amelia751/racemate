@@ -35,7 +35,7 @@ export const ThrottleBrakeTimeSeries = memo(function ThrottleBrakeTimeSeries() {
   }, [telemetryData]);
 
   return (
-    <Card className="bg-black/40 border-green-500/30 h-full">
+    <Card className="bg-black/40  h-full">
       <CardContent className="pt-3 h-full">
         <div className="text-green-400 text-xs font-bold mb-2 tracking-wider">THROTTLE / BRAKE</div>
         <ResponsiveContainer width="100%" height="85%">
@@ -78,7 +78,7 @@ export const GForceTimeSeries = memo(function GForceTimeSeries() {
   }, [telemetryData]);
 
   return (
-    <Card className="bg-black/40 border-purple-500/30 h-full">
+    <Card className="bg-black/40  h-full">
       <CardContent className="pt-3 h-full">
         <div className="text-purple-400 text-xs font-bold mb-2 tracking-wider">G-FORCE</div>
         <ResponsiveContainer width="100%" height="85%">
@@ -105,7 +105,7 @@ export function FuelBar() {
   const fuelPercentage = (fuelLevel / 50) * 100;
   
   return (
-    <Card className="bg-black/40 border-orange-500/30 h-full">
+    <Card className="bg-black/40  h-full">
       <CardContent className="pt-3 h-full flex flex-col">
         <div className="text-orange-400 text-xs font-bold mb-2 tracking-wider">FUEL</div>
         <div className="flex-1 flex items-center gap-3">
@@ -152,7 +152,7 @@ export function TirePressureBars() {
   };
 
   return (
-    <Card className="bg-black/40 border-cyan-500/30 h-full">
+    <Card className="bg-black/40  h-full">
       <CardContent className="pt-3 h-full flex flex-col">
         <div className="text-cyan-400 text-xs font-bold mb-2 tracking-wider">TIRE PRESSURE</div>
         <div className="flex-1 flex items-center justify-between gap-2">
@@ -201,7 +201,7 @@ export function BrakeTemperatureBars() {
   };
 
   return (
-    <Card className="bg-black/40 border-red-500/30 h-full">
+    <Card className="bg-black/40  h-full">
       <CardContent className="pt-3 h-full flex flex-col">
         <div className="text-red-400 text-xs font-bold mb-2 tracking-wider">BRAKE TEMP (°C)</div>
         <div className="flex-1 flex items-center justify-between gap-2">

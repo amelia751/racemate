@@ -31,7 +31,7 @@ export function FuelConsumptionChart() {
   const lapsRemaining = Math.floor(currentFuel / 2.5);
 
   return (
-    <Card className="bg-black/40 border-orange-500/30 h-full">
+    <Card className="bg-black/40  h-full">
       <CardContent className="pt-3 h-full flex flex-col">
         <div className="flex items-center justify-between mb-2">
           <div className="text-orange-400 text-xs font-bold tracking-wider">FUEL CONSUMPTION</div>
@@ -135,7 +135,7 @@ export function TireTemperatureDisplay() {
   );
 
   return (
-    <Card className="bg-black/40 border-cyan-500/30 h-full">
+    <Card className="bg-black/40  h-full">
       <CardContent className="pt-3 h-full flex flex-col">
         <div className="text-cyan-400 text-xs font-bold mb-3 tracking-wider">TIRE TEMPERATURE</div>
         <div className="flex-1 grid grid-cols-2 gap-4 items-center justify-items-center">
@@ -203,7 +203,7 @@ export function BrakeSystemStatus() {
   };
 
   return (
-    <Card className="bg-black/40 border-red-500/30 h-full">
+    <Card className="bg-black/40  h-full">
       <CardContent className="pt-3 h-full flex flex-col">
         <div className="text-red-400 text-xs font-bold mb-2 tracking-wider">BRAKE SYSTEM</div>
         <div className="flex-1 flex gap-3">

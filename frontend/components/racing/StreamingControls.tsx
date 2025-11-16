@@ -132,7 +132,7 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-3 gap-2 pt-2 border-t border-cyan-500/20">
+            <div className="grid grid-cols-3 gap-2 pt-2">
               <Button
                 variant="outline"
                 size="sm"

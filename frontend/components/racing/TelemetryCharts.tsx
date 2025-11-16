@@ -22,7 +22,7 @@ interface TelemetryPoint {
 
 const SpeedChart = memo(function SpeedChart({ data }: { data: TelemetryPoint[] }) {
   return (
-    <Card className="bg-black/40 border-cyan-500/30">
+    <Card className="bg-black/40">
       <CardContent className="pt-4 h-full">
         <div className="text-cyan-400 text-xs font-bold mb-2 tracking-wider">SPEED (KM/H)</div>
         <ResponsiveContainer width="100%" height="90%">
@@ -57,7 +57,7 @@ const SpeedChart = memo(function SpeedChart({ data }: { data: TelemetryPoint[] }
 
 const RPMChart = memo(function RPMChart({ data }: { data: TelemetryPoint[] }) {
   return (
-    <Card className="bg-black/40 border-yellow-500/30">
+    <Card className="bg-black/40">
       <CardContent className="pt-4 h-full">
         <div className="text-yellow-400 text-xs font-bold mb-2 tracking-wider">ENGINE RPM</div>
         <ResponsiveContainer width="100%" height="90%">

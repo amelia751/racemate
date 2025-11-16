@@ -53,7 +53,7 @@ export default function RacingDashboard() {
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className="relative z-10 border-b border-cyan-500/30 bg-black/60 backdrop-blur-md"
+        className="relative z-10 bg-black/60 backdrop-blur-md"
       >
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -97,7 +97,7 @@ export default function RacingDashboard() {
             {/* Lap Time & Current Status - Side by Side */}
             <div className="grid grid-cols-2 gap-4 h-[180px]">
               {/* Lap Time Info - Left */}
-              <Card className="bg-black/60 border-cyan-500/30 backdrop-blur-sm">
+              <Card className="bg-black/40 backdrop-blur-sm">
                 <CardContent className="pt-4 h-full">
                   <LapTimeDisplay />
                 </CardContent>
@@ -141,8 +141,8 @@ export default function RacingDashboard() {
             transition={{ delay: 0.4 }}
             className="col-span-3"
           >
-            <Card className="bg-black/60 border-yellow-500/30 backdrop-blur-sm h-full flex flex-col">
-              <div className="border-b border-yellow-500/30 px-4 py-3 bg-yellow-500/5">
+            <Card className="bg-black/40 backdrop-blur-sm h-full flex flex-col">
+              <div className="px-4 py-3 bg-yellow-500/5">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
                   <span className="text-xs font-bold tracking-wider text-yellow-400">
