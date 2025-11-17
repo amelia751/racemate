@@ -87,11 +87,13 @@ export function TireTemperatureDisplay() {
     RL: 85,
     RR: 86
   });
+  const [isStreaming, setIsStreaming] = useState(false);
   const { telemetryData } = useCogniraceStore();
 
   useEffect(() => {
     // Only update when streaming (when telemetryData is being updated)
     if (telemetryData) {
+      setIsStreaming(true);
       setTemps({
         FL: 80 + Math.random() * 20,
         FR: 80 + Math.random() * 20,
@@ -129,18 +131,23 @@ export function TireTemperatureDisplay() {
             const color = getTempColor(temp);
 
             // Determine temperature status
-            let status = 'Cold';
-            if (temp > 95) status = 'Hot';
-            else if (temp > 85) status = 'Warm';
-            else if (temp > 75) status = 'Good';
+            let status = '---';
+            if (isStreaming) {
+              if (temp > 95) status = 'Hot';
+              else if (temp > 85) status = 'Warm';
+              else if (temp > 75) status = 'Good';
+              else status = 'Cold';
+            }
 
             return (
               <div key={pos.key} className="flex items-center mb-1">
                 <div
                   className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0"
-                  style={{ backgroundColor: color, opacity: 0.85, padding: '6px' }}
+                  style={{ backgroundColor: color, opacity: isStreaming ? 0.85 : 0.3, padding: '6px' }}
                 >
-                  <div className="text-base font-bold text-white text-center">{Math.round(temp)}</div>
+                  <div className="text-base font-bold text-white text-center">
+                    {isStreaming ? Math.round(temp) : '--'}
+                  </div>
                 </div>
                 <div className="text-left flex-1 ml-2">
                   <div className="text-[10px] text-muted-foreground font-bold">{pos.label}</div>
@@ -229,7 +236,7 @@ export function BrakeSystemStatus() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={tempHistory} key="brake-temp-chart">
                 <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                <XAxis stroke="#ef4444" tick={{ fontSize: 10 }} />
+                <XAxis hide />
                 <YAxis stroke="#ef4444" domain={[300, 600]} tick={{ fontSize: 10 }} />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#000', border: '1px solid #ef4444' }}
