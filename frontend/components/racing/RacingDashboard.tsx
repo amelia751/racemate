@@ -37,9 +37,9 @@ export default function RacingDashboard() {
   }
 
   return (
-    <div className="min-h-screen h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-hidden">
+    <div className="w-screen h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-hidden flex flex-col">
       {/* Animated Background Grid */}
-      <div className="fixed inset-0 pointer-events-none opacity-10">
+      <div className="fixed inset-0 pointer-events-none opacity-10 z-0">
         <div className="absolute inset-0" style={{
           backgroundImage: `
             linear-gradient(to right, cyan 1px, transparent 1px),
@@ -50,8 +50,9 @@ export default function RacingDashboard() {
       </div>
 
       {/* Main Content Grid - Full Screen */}
-      <div className="container mx-auto px-6 py-6 relative z-10 h-screen">
-        <div className="grid grid-cols-12 gap-8 h-full">
+      <div className="flex-1 relative z-10 overflow-hidden">
+        <div className="px-6 py-6 h-full">
+          <div className="grid grid-cols-12 gap-8 h-full">
           
           {/* LEFT COLUMN - Telemetry Charts with Header */}
           <motion.div
@@ -134,6 +135,7 @@ export default function RacingDashboard() {
             <VoiceStrategist />
           </motion.div>
 
+          </div>
         </div>
       </div>
 

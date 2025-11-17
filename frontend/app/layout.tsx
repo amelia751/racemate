@@ -16,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className} bg-background`}>
+    <html lang="en" className="dark h-screen">
+      <body className={`${inter.className} bg-background h-screen overflow-hidden`}>
         <LiveKitProvider>
           {children}
         </LiveKitProvider>

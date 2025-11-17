@@ -43,7 +43,7 @@ export function FuelConsumptionChart() {
         <div className="text-orange-400 text-xs font-bold mb-1 tracking-wider">FUEL</div>
 
         {/* Main fuel display area */}
-        <div className="flex-1 flex items-end justify-between gap-3">
+        <div className="flex-1 flex items-end gap-3">
           {/* Fuel history bars - Vertical */}
           <div className="flex items-end gap-2 h-full flex-1">
             {fuelHistory.map((fuel, idx) => {
@@ -68,7 +68,7 @@ export function FuelConsumptionChart() {
           </div>
 
           {/* Current fuel display */}
-          <div className="text-center">
+          <div className="text-center flex-shrink-0">
             <div className="text-orange-400 text-2xl font-black font-mono">{currentFuel.toFixed(0)}</div>
             <div className="text-[7px] text-muted-foreground">L</div>
             <div className="text-[7px] text-muted-foreground mt-0.5">{lapsRemaining}L</div>
