@@ -173,11 +173,13 @@ export function BrakeSystemStatus() {
 
   const [tempHistory, setTempHistory] = useState<any[]>([]);
   const [historyId, setHistoryId] = useState(0);
+  const [isStreaming, setIsStreaming] = useState(false);
   const { telemetryData } = useCogniraceStore();
 
   useEffect(() => {
     // Only update when streaming (when telemetryData is being updated)
     if (telemetryData) {
+      setIsStreaming(true);
       const newBrakes = {
         FL: {
           temp: 400 + Math.random() * 100,
@@ -287,10 +289,10 @@ export function BrakeSystemStatus() {
                   <span className="w-6 text-muted-foreground font-bold">{corner}</span>
                   <div
                     className="w-10 h-2.5 rounded-full"
-                    style={{ backgroundColor: color }}
+                    style={{ backgroundColor: color, opacity: isStreaming ? 1 : 0.3 }}
                   />
                   <span className="font-mono font-bold text-[10px]" style={{ color: color }}>
-                    {Math.round(data.temp)}°C
+                    {isStreaming ? `${Math.round(data.temp)}°C` : '--'}
                   </span>
                 </div>
               );
