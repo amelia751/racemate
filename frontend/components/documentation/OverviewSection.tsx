@@ -145,7 +145,7 @@ export default function OverviewSection() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="fuel" className="w-full">
+          <Tabs defaultValue="fuel" className="w-full" suppressHydrationWarning>
             <TabsList className="grid grid-cols-4 w-full">
               <TabsTrigger value="fuel">Predictive</TabsTrigger>
               <TabsTrigger value="detection">Detection</TabsTrigger>

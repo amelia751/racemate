@@ -208,7 +208,7 @@ pit_loss = model.predict(X_test)  # Predicted time loss in seconds`}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Tabs defaultValue="circuits" className="w-full">
+          <Tabs defaultValue="circuits" className="w-full" suppressHydrationWarning>
             <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="circuits">Circuit Comparison</TabsTrigger>
               <TabsTrigger value="tires">Tire Compounds</TabsTrigger>

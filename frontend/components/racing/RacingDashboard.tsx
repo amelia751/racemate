@@ -30,14 +30,14 @@ export default function RacingDashboard() {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-cyan-400 text-2xl font-bold animate-pulse">
-          INITIALIZING COGNIRACE SYSTEMS...
+          INITIALIZING RACEMATE SYSTEMS...
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-hidden flex flex-col">
+    <div className="min-h-screen h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-hidden">
       {/* Animated Background Grid */}
       <div className="fixed inset-0 pointer-events-none opacity-10">
         <div className="absolute inset-0" style={{
@@ -49,38 +49,34 @@ export default function RacingDashboard() {
         }} />
       </div>
 
-      {/* Header */}
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className="relative z-10 bg-black/60 backdrop-blur-md"
-      >
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {isStreaming && (
-                <Badge variant="default" className="text-xs bg-green-500 text-white animate-pulse">
-                  ● LIVE
-                </Badge>
-              )}
-            </div>
-            
-          </div>
-        </div>
-      </motion.header>
-
-      {/* Main Content */}
-      <div className="container mx-auto px-6 py-6 relative z-10 flex-1 overflow-hidden">
+      {/* Main Content Grid - Full Screen */}
+      <div className="container mx-auto px-6 py-6 relative z-10 h-screen">
         <div className="grid grid-cols-12 gap-8 h-full">
           
-          {/* LEFT COLUMN - Telemetry Charts */}
+          {/* LEFT COLUMN - Telemetry Charts with Header */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="col-span-9 space-y-4 overflow-y-auto overflow-x-hidden pr-2 h-full"
-            style={{ minHeight: 0 }}
+            className="col-span-9 flex flex-col h-full overflow-hidden"
           >
+            {/* Dashboard Header */}
+            <div className="bg-black/60 backdrop-blur-md rounded-t-lg px-6 py-4 flex-shrink-0">
+              <div className="flex items-center gap-4">
+                <div className="text-xl font-black tracking-tight">
+                  <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">RACE</span>
+                  <span className="bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent">MATE</span>
+                </div>
+                {isStreaming && (
+                  <Badge variant="default" className="text-xs bg-green-500 text-white animate-pulse">
+                    ● LIVE
+                  </Badge>
+                )}
+              </div>
+            </div>
+
+            {/* Scrollable Dashboard Content */}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden pr-2 space-y-4 pt-4 pb-6" style={{ minHeight: 0 }}>
             {/* Lap Time & Current Status - Side by Side */}
             <div className="grid grid-cols-2 gap-4 h-auto">
               {/* Lap Time Info - Left */}
@@ -107,21 +103,27 @@ export default function RacingDashboard() {
               <GForceTimeSeries />
             </div>
 
-            {/* Advanced System Visualizations */}
-            <div className="grid grid-cols-2 gap-4 h-[120px]">
-              <FuelConsumptionChart />
-              <TireTemperatureDisplay />
-            </div>
-
+            {/* Brake System Status - Full Width */}
             <div className="h-[120px]">
               <BrakeSystemStatus />
             </div>
 
+            {/* Advanced System Visualizations */}
+            <div className="grid grid-cols-2 gap-4 h-[220px] flex-shrink-0">
+              <div className="h-full overflow-hidden">
+                <FuelConsumptionChart />
+              </div>
+              <div className="h-full overflow-hidden">
+                <TireTemperatureDisplay />
+              </div>
+            </div>
+
             {/* Streaming Controls */}
             <StreamingControls onStreamingChange={setIsStreaming} />
+            </div>
           </motion.div>
 
-          {/* RIGHT COLUMN - AI Assistant */}
+          {/* RIGHT COLUMN - AI Assistant - Full Height */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}

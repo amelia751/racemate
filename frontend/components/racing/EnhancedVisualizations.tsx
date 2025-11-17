@@ -38,12 +38,12 @@ export function FuelConsumptionChart() {
   const barColor = getFuelColor(fuelPercentage);
 
   return (
-    <Card className="bg-black/40 h-full py-2">
-      <CardContent className="py-0 px-3 h-full flex flex-col">
+    <Card className="bg-black/40 h-full">
+      <CardContent className="pt-3 pb-2 px-3 h-full flex flex-col">
         <div className="text-orange-400 text-xs font-bold mb-1 tracking-wider">FUEL</div>
 
         {/* Main fuel display area */}
-        <div className="flex-1 flex items-end justify-center gap-3">
+        <div className="flex-1 flex items-end justify-between gap-3">
           {/* Fuel history bars - Vertical */}
           <div className="flex items-end gap-2 h-full flex-1">
             {fuelHistory.map((fuel, idx) => {
@@ -123,7 +123,7 @@ export function TireTemperatureDisplay() {
         <div className="text-cyan-400 text-xs font-bold mb-2 tracking-wider">TIRE TEMPERATURE</div>
 
         {/* 2x2 Grid layout for tires */}
-        <div className="grid grid-cols-2 gap-4 flex-1 p-2">
+        <div className="grid grid-cols-2 gap-2 flex-1 p-2">
           {tirePositions.map((pos) => {
             const temp = temps[pos.key as keyof typeof temps];
             const color = getTempColor(temp);
@@ -135,14 +135,14 @@ export function TireTemperatureDisplay() {
             else if (temp > 75) status = 'Good';
 
             return (
-              <div key={pos.key} className="flex items-center mb-2">
+              <div key={pos.key} className="flex items-center mb-1">
                 <div
-                  className="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0"
-                  style={{ backgroundColor: color, opacity: 0.85, padding: '12px' }}
+                  className="w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0"
+                  style={{ backgroundColor: color, opacity: 0.85, padding: '6px' }}
                 >
-                  <div className="text-2xl font-bold text-white text-center">{Math.round(temp)}</div>
+                  <div className="text-base font-bold text-white text-center">{Math.round(temp)}</div>
                 </div>
-                <div className="text-left flex-1 ml-6">
+                <div className="text-left flex-1 ml-2">
                   <div className="text-[10px] text-muted-foreground font-bold">{pos.label}</div>
                   <div className="text-[8px] text-muted-foreground">{status}</div>
                 </div>

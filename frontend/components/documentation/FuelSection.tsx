@@ -164,7 +164,7 @@ model = GradientBoostingRegressor(
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Tabs defaultValue="importance" className="w-full">
+          <Tabs defaultValue="importance" className="w-full" suppressHydrationWarning>
             <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="importance">Feature Importance</TabsTrigger>
               <TabsTrigger value="engineering">Feature Engineering</TabsTrigger>

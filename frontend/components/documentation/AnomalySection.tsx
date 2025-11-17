@@ -215,7 +215,7 @@ path_lengths = model.score_samples(X_test)  # Shorter path = anomaly`}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Tabs defaultValue="scores" className="w-full">
+          <Tabs defaultValue="scores" className="w-full" suppressHydrationWarning>
             <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="scores">Anomaly Scores</TabsTrigger>
               <TabsTrigger value="types">Anomaly Types</TabsTrigger>

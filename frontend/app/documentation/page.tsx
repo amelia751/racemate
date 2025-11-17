@@ -14,21 +14,15 @@ import {
   User,
   Fuel,
   Home,
+  Loader2,
 } from 'lucide-react';
 
 // Loading component (must be defined before dynamic imports)
 function LoadingSection() {
   return (
-    <div className="flex flex-col items-center justify-center py-24 space-y-6">
-      <div className="relative w-16 h-16">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-purple-500/30 rounded-full blur-xl animate-pulse" />
-        <div className="absolute inset-2 border-2 border-cyan-400/30 rounded-full animate-spin" style={{ animationDuration: '3s' }} />
-        <div className="absolute inset-2 border-2 border-transparent border-t-cyan-400 rounded-full animate-spin" style={{ animationDuration: '1.5s' }} />
-      </div>
-      <div className="text-center space-y-2">
-        <p className="text-slate-300 font-medium">Loading documentation</p>
-        <p className="text-xs text-slate-500">Please wait...</p>
-      </div>
+    <div className="flex flex-col items-center justify-center py-24 space-y-4">
+      <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
+      <p className="text-slate-400 text-sm">Loading documentation...</p>
     </div>
   );
 }
@@ -95,8 +89,8 @@ export default function Documentation() {
         {/* Logo Section */}
         <div className="px-6 py-6 border-b border-slate-800/50">
           <div className="text-xl font-black tracking-tight">
-            <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">COGNI</span>
-            <span className="bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent">RACE</span>
+            <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">RACE</span>
+            <span className="bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent">MATE</span>
           </div>
           <div className="text-xs text-white mt-1">Documentation</div>
         </div>
@@ -113,7 +107,7 @@ export default function Documentation() {
                   onClick={() => setActiveSection(section.id)}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-all duration-200 ${
                     isActive
-                      ? 'bg-slate-800 text-white'
+                      ? 'bg-slate-800 text-cyan-400'
                       : 'text-white hover:bg-slate-800/50'
                   }`}
                 >

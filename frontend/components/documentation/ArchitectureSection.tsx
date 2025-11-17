@@ -121,7 +121,7 @@ export default function ArchitectureSection() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Tabs defaultValue="backend" className="w-full">
+          <Tabs defaultValue="backend" className="w-full" suppressHydrationWarning>
             <TabsList className="grid grid-cols-4 w-full">
               <TabsTrigger value="backend">Backend</TabsTrigger>
               <TabsTrigger value="ml">ML Pipeline</TabsTrigger>
@@ -257,7 +257,7 @@ export default function ArchitectureSection() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Tabs defaultValue="latency" className="w-full">
+          <Tabs defaultValue="latency" className="w-full" suppressHydrationWarning>
             <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="latency">System Latency</TabsTrigger>
               <TabsTrigger value="throughput">Throughput</TabsTrigger>

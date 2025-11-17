@@ -223,7 +223,7 @@ overtake_prob = model(node_features, edge_index)  # [20, 1]`}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Tabs defaultValue="overtake" className="w-full">
+          <Tabs defaultValue="overtake" className="w-full" suppressHydrationWarning>
             <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="overtake">Overtaking Probability</TabsTrigger>
               <TabsTrigger value="position">Position Forecast</TabsTrigger>

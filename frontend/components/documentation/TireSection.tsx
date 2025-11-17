@@ -255,7 +255,7 @@ class TireDegradationModel(nn.Module):
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Tabs defaultValue="features" className="w-full">
+          <Tabs defaultValue="features" className="w-full" suppressHydrationWarning>
             <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="features">Features</TabsTrigger>
               <TabsTrigger value="importance">Importance</TabsTrigger>

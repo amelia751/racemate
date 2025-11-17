@@ -272,8 +272,7 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
               ) : (
                 <Button
                   onClick={stopStreaming}
-                  variant="destructive"
-                  className="flex-1 font-bold"
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold"
                   size="lg"
                 >
                   <Square className="w-4 h-4 mr-2" />
@@ -299,11 +298,6 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
                 </div>
               </div>
             )}
-
-            {/* Info */}
-            <div className="text-xs text-center text-muted-foreground p-2">
-              Simulating real-time telemetry to trigger machine learning recommendations
-            </div>
           </div>
         </CardContent>
       </Card>

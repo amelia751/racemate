@@ -214,8 +214,13 @@ export default function VoiceStrategist() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-1">
                           <Badge
-                            variant={rec.type === 'critical' ? 'destructive' : 'default'}
-                            className="text-[9px] px-3 py-1 h-6 whitespace-nowrap"
+                            className={`text-[9px] px-3 py-1 h-6 whitespace-nowrap ${
+                              rec.type === 'critical' 
+                                ? 'bg-red-500/20 text-red-300 border border-red-500/40' 
+                                : rec.type === 'warning'
+                                ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40'
+                                : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+                            }`}
                           >
                             {rec.type === 'critical' ? '🔴 CRITICAL' : rec.type === 'warning' ? '🟡 WARNING' : '🔵 INFO'}
                           </Badge>

@@ -241,7 +241,7 @@ embeddings = model.encoder(telemetry_data)`}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <Tabs defaultValue="radar" className="w-full">
+          <Tabs defaultValue="radar" className="w-full" suppressHydrationWarning>
             <TabsList className="grid grid-cols-3 w-full">
               <TabsTrigger value="radar">Driver Profiles</TabsTrigger>
               <TabsTrigger value="embedding">Embedding Space</TabsTrigger>
