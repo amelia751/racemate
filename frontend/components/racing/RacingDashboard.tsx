@@ -50,9 +50,8 @@ export default function RacingDashboard() {
       </div>
 
       {/* Main Content Grid - Full Screen */}
-      <div className="flex-1 relative z-10 overflow-hidden">
-        <div className="px-6 py-6 h-full">
-          <div className="grid grid-cols-12 gap-8 h-full">
+      <div className="flex-1 relative z-10 overflow-hidden px-6 py-6">
+        <div className="grid grid-cols-12 gap-8 h-full">
           
           {/* LEFT COLUMN - Telemetry Charts with Header */}
           <motion.div
@@ -62,9 +61,9 @@ export default function RacingDashboard() {
             className="col-span-9 flex flex-col h-full overflow-hidden"
           >
             {/* Dashboard Header */}
-            <div className="bg-black/60 backdrop-blur-md rounded-t-lg px-6 py-4 flex-shrink-0">
+            <div className="bg-black/60 backdrop-blur-md px-6 py-4 flex-shrink-0">
               <div className="flex items-center gap-4">
-                <div className="text-xl font-black tracking-tight">
+                <div className="text-2xl font-black tracking-tight">
                   <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">RACE</span>
                   <span className="bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent">MATE</span>
                 </div>
@@ -135,7 +134,6 @@ export default function RacingDashboard() {
             <VoiceStrategist />
           </motion.div>
 
-          </div>
         </div>
       </div>
 
