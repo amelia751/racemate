@@ -103,7 +103,7 @@ export default function DebugLayer() {
       // Parse store logs and add to global logs
       const parsedLogs: LogEntry[] = storeDebugLogs.map((logStr, idx) => {
         // Parse format: [timestamp] [LEVEL] message
-        const match = logStr.match(/\[(.*?)\] \[(.*?)\] (.+)/s);
+        const match = logStr.match(/\[(.*?)\] \[(.*?)\] ([\s\S]+)/);
         if (match) {
           return {
             timestamp: new Date(match[1]),

@@ -1,25 +1,69 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Cpu, 
-  Zap, 
-  Gauge, 
-  TrendingUp, 
-  AlertTriangle, 
-  Network, 
-  User, 
+import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Cpu,
+  Zap,
+  Gauge,
+  TrendingUp,
+  AlertTriangle,
+  Network,
+  User,
   Fuel,
-  ChevronRight,
-  Home
+  Home,
 } from 'lucide-react';
-import Link from 'next/link';
-import OverviewSection from '@/components/documentation/OverviewSection';
-import FuelSection from '@/components/documentation/FuelSection';
-import LaptimeSection from '@/components/documentation/LaptimeSection';
-import TireSection from '@/components/documentation/TireSection';
+
+// Loading component (must be defined before dynamic imports)
+function LoadingSection() {
+  return (
+    <div className="flex flex-col items-center justify-center py-24 space-y-6">
+      <div className="relative w-16 h-16">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/30 to-purple-500/30 rounded-full blur-xl animate-pulse" />
+        <div className="absolute inset-2 border-2 border-cyan-400/30 rounded-full animate-spin" style={{ animationDuration: '3s' }} />
+        <div className="absolute inset-2 border-2 border-transparent border-t-cyan-400 rounded-full animate-spin" style={{ animationDuration: '1.5s' }} />
+      </div>
+      <div className="text-center space-y-2">
+        <p className="text-slate-300 font-medium">Loading documentation</p>
+        <p className="text-xs text-slate-500">Please wait...</p>
+      </div>
+    </div>
+  );
+}
+
+// Lazy load documentation sections using Next.js dynamic imports
+const OverviewSection = dynamic(() => import('@/components/documentation/OverviewSection'), {
+  loading: () => <LoadingSection />
+});
+const FuelSection = dynamic(() => import('@/components/documentation/FuelSection'), {
+  loading: () => <LoadingSection />
+});
+const LaptimeSection = dynamic(() => import('@/components/documentation/LaptimeSection'), {
+  loading: () => <LoadingSection />
+});
+const TireSection = dynamic(() => import('@/components/documentation/TireSection'), {
+  loading: () => <LoadingSection />
+});
+const FCYSection = dynamic(() => import('@/components/documentation/FCYSection'), {
+  loading: () => <LoadingSection />
+});
+const PitSection = dynamic(() => import('@/components/documentation/PitSection'), {
+  loading: () => <LoadingSection />
+});
+const AnomalySection = dynamic(() => import('@/components/documentation/AnomalySection'), {
+  loading: () => <LoadingSection />
+});
+const DriverSection = dynamic(() => import('@/components/documentation/DriverSection'), {
+  loading: () => <LoadingSection />
+});
+const TrafficSection = dynamic(() => import('@/components/documentation/TrafficSection'), {
+  loading: () => <LoadingSection />
+});
+const ArchitectureSection = dynamic(() => import('@/components/documentation/ArchitectureSection'), {
+  loading: () => <LoadingSection />
+});
 
 const sections = [
   { id: 'overview', title: 'System Overview', icon: Home },
@@ -38,95 +82,76 @@ export default function Documentation() {
   const [activeSection, setActiveSection] = useState('overview');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-900 text-white">
-      {/* Header */}
-      <header className="border-b border-gray-800 bg-black/40 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-4">
-              <div className="text-2xl font-black tracking-tighter">
-                <span className="text-cyan-400">COGNI</span>
-                <span className="text-yellow-400">RACE</span>
-              </div>
-              <span className="text-sm text-muted-foreground">/ Documentation</span>
-            </Link>
-            <Badge variant="outline" className="text-xs">
-              ML Pipeline v1.0
-            </Badge>
-          </div>
-        </div>
-      </header>
-
-      <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-12 gap-8">
-          {/* Sidebar */}
-          <aside className="col-span-3 space-y-2">
-            <div className="sticky top-24">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
-                📚 Contents
-              </h3>
-              <nav className="space-y-1">
-                {sections.map((section) => {
-                  const Icon = section.icon;
-                  return (
-                    <button
-                      key={section.id}
-                      onClick={() => setActiveSection(section.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all ${
-                        activeSection === section.id
-                          ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50'
-                          : 'text-gray-400 hover:bg-gray-800/50 hover:text-white'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4 flex-shrink-0" />
-                      <span className="truncate">{section.title}</span>
-                      {activeSection === section.id && (
-                        <ChevronRight className="w-3 h-3 ml-auto" />
-                      )}
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
-          </aside>
-
-          {/* Main Content */}
-          <main className="col-span-9 space-y-8">
-            <motion.div
-              key={activeSection}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {activeSection === 'overview' && <OverviewSection />}
-              {activeSection === 'fuel' && <FuelSection />}
-              {activeSection === 'laptime' && <LaptimeSection />}
-              {activeSection === 'tire' && <TireSection />}
-              {activeSection === 'fcy' && <PlaceholderSection title="FCY Hazard Predictor" />}
-              {activeSection === 'pit' && <PlaceholderSection title="Pit Loss Model" />}
-              {activeSection === 'anomaly' && <PlaceholderSection title="Anomaly Detector" />}
-              {activeSection === 'driver' && <PlaceholderSection title="Driver Embedding Model" />}
-              {activeSection === 'traffic' && <PlaceholderSection title="Traffic GNN" />}
-              {activeSection === 'architecture' && <PlaceholderSection title="System Architecture" />}
-            </motion.div>
-          </main>
-        </div>
+    <div className="h-screen flex bg-black text-white overflow-hidden p-6">
+      {/* Animated Background */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-black to-slate-900" />
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-3xl animate-pulse" />
       </div>
-    </div>
-  );
-}
 
-// Placeholder for sections not yet created
-function PlaceholderSection({ title }: { title: string }) {
-  return (
-    <div className="bg-black/40 border border-cyan-500/20 rounded-lg p-12 text-center">
-      <h2 className="text-3xl font-bold text-cyan-400 mb-4">{title}</h2>
-      <p className="text-muted-foreground">
-        Detailed documentation component coming soon...
-      </p>
-      <p className="text-sm text-muted-foreground mt-2">
-        Use Overview and Fuel Consumption sections as reference for comprehensive content structure
-      </p>
+      {/* Sidebar Navigation */}
+      <aside className="w-64 rounded-lg flex flex-col bg-black/40 backdrop-blur-sm flex-shrink-0">
+        {/* Logo Section */}
+        <div className="px-6 py-6 border-b border-slate-800/50">
+          <div className="text-xl font-black tracking-tight">
+            <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">COGNI</span>
+            <span className="bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent">RACE</span>
+          </div>
+          <div className="text-xs text-white mt-1">Documentation</div>
+        </div>
+
+        {/* Navigation */}
+        <ScrollArea className="flex-1">
+          <nav className="px-4 py-4 space-y-1">
+            {sections.map((section) => {
+              const Icon = section.icon;
+              const isActive = activeSection === section.id;
+              return (
+                <button
+                  key={section.id}
+                  onClick={() => setActiveSection(section.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+                    isActive
+                      ? 'bg-slate-800 text-white'
+                      : 'text-white hover:bg-slate-800/50'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${
+                    isActive ? 'text-cyan-400' : 'text-slate-400'
+                  }`} />
+                  <span className="truncate text-left">{section.title}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </ScrollArea>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto rounded-lg bg-black/40 backdrop-blur-sm ml-6">
+        <div className="px-8 py-8">
+          <motion.div
+            key={activeSection}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="space-y-8"
+          >
+            {activeSection === 'overview' && <OverviewSection />}
+            {activeSection === 'fuel' && <FuelSection />}
+            {activeSection === 'laptime' && <LaptimeSection />}
+            {activeSection === 'tire' && <TireSection />}
+            {activeSection === 'fcy' && <FCYSection />}
+            {activeSection === 'pit' && <PitSection />}
+            {activeSection === 'anomaly' && <AnomalySection />}
+            {activeSection === 'driver' && <DriverSection />}
+            {activeSection === 'traffic' && <TrafficSection />}
+            {activeSection === 'architecture' && <ArchitectureSection />}
+          </motion.div>
+        </div>
+      </main>
     </div>
   );
 }

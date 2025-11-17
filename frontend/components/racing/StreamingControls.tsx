@@ -302,7 +302,7 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
 
             {/* Info */}
             <div className="text-xs text-center text-muted-foreground p-2">
-              Simulating real-time telemetry to trigger AI recommendations
+              Simulating real-time telemetry to trigger machine learning recommendations
             </div>
           </div>
         </CardContent>

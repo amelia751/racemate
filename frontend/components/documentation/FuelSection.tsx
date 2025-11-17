@@ -10,6 +10,7 @@ import {
   GitBranch, Zap, Settings, BarChart3
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, ScatterChart, Scatter } from 'recharts';
+import { DocumentationHeader, CodeBlock, DocumentationTabs } from './shared';
 
 // Sample data for visualizations
 const featureImportanceData = [
@@ -49,48 +50,32 @@ export default function FuelSection() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-900/30 via-orange-900/30 to-black border border-yellow-500/30 p-8">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:30px_30px]" />
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center">
-              <Fuel className="w-7 h-7 text-white" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-black text-yellow-400">
-                FUEL CONSUMPTION MODEL
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Gradient Boosting Regressor for High-Precision Fuel Usage Prediction
-              </p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-4 gap-4 mt-6">
-            <MetricCard label="Algorithm" value="Gradient Boosting" />
-            <MetricCard label="MAE" value="0.008 L/lap" />
-            <MetricCard label="R² Score" value="0.96" />
-            <MetricCard label="Inference" value="12ms" />
-          </div>
-        </div>
-      </div>
+      <DocumentationHeader
+        icon={Fuel}
+        title="FUEL CONSUMPTION MODEL"
+        subtitle="Gradient Boosting Regressor for High-Precision Fuel Usage Prediction"
+        color="amber"
+        metrics={[
+          { label: 'Algorithm', value: 'Gradient Boosting' },
+          { label: 'MAE', value: '0.008 L/lap' },
+          { label: 'R² Score', value: '0.96' },
+          { label: 'Inference', value: '12ms' }
+        ]}
+      />
 
       {/* Model Architecture */}
-      <Card className="bg-black/40 border-yellow-500/20">
+      <Card className="bg-slate-900/20 transition-colors backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-yellow-400">Model Architecture</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">Model Architecture</CardTitle>
+          <CardDescription className="text-slate-400">
             Ensemble learning with decision tree weak learners
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="bg-gray-900/50 rounded-lg p-6 font-mono text-sm space-y-3">
-            <div className="flex items-start gap-3">
-              <Code className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <div className="text-yellow-400 font-semibold mb-2">GradientBoostingRegressor Configuration</div>
-                <pre className="text-muted-foreground leading-relaxed">
-{`from sklearn.ensemble import GradientBoostingRegressor
+          <CodeBlock
+            title="GradientBoostingRegressor Configuration"
+            language="python"
+            code={`from sklearn.ensemble import GradientBoostingRegressor
 
 model = GradientBoostingRegressor(
     n_estimators=100,         # 100 sequential trees
@@ -103,10 +88,7 @@ model = GradientBoostingRegressor(
     random_state=42,
     loss='squared_error'       # L2 loss function
 )`}
-                </pre>
-              </div>
-            </div>
-          </div>
+          />
 
           <Separator />
 
@@ -116,7 +98,7 @@ model = GradientBoostingRegressor(
               <span>Hyperparameter Tuning Process</span>
             </h3>
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gradient-to-br from-purple-900/20 to-black border border-purple-500/30 rounded-lg p-4">
+              <div className="bg-gradient-to-br from-purple-900/20 to-black rounded-lg p-4">
                 <h4 className="font-semibold text-purple-400 mb-3">Grid Search Parameters</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -138,7 +120,7 @@ model = GradientBoostingRegressor(
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-cyan-900/20 to-black border border-cyan-500/30 rounded-lg p-4">
+              <div className="bg-gradient-to-br from-cyan-900/20 to-black rounded-lg p-4">
                 <h4 className="font-semibold text-cyan-400 mb-3">Cross-Validation Results</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -174,10 +156,10 @@ model = GradientBoostingRegressor(
       </Card>
 
       {/* Feature Engineering & Importance */}
-      <Card className="bg-black/40 border-yellow-500/20">
+      <Card className="bg-slate-900/20 transition-colors backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-yellow-400">Feature Engineering & Importance</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">Feature Engineering & Importance</CardTitle>
+          <CardDescription className="text-slate-400">
             26 engineered features from raw telemetry data
           </CardDescription>
         </CardHeader>
@@ -209,21 +191,21 @@ model = GradientBoostingRegressor(
               </div>
 
               <div className="grid grid-cols-3 gap-4 mt-6">
-                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                <div className="bg-green-500/10 rounded-lg p-4">
                   <div className="text-2xl font-bold text-green-400">RPM</div>
                   <div className="text-sm text-muted-foreground">22% importance</div>
                   <p className="text-xs text-muted-foreground mt-2">
                     Engine speed directly correlates with fuel injection rate. Higher RPM = exponentially higher consumption.
                   </p>
                 </div>
-                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                <div className="bg-blue-500/10 rounded-lg p-4">
                   <div className="text-2xl font-bold text-blue-400">Speed</div>
                   <div className="text-sm text-muted-foreground">18% importance</div>
                   <p className="text-xs text-muted-foreground mt-2">
                     Aerodynamic drag increases with square of velocity. High-speed sections require more fuel.
                   </p>
                 </div>
-                <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4">
+                <div className="bg-purple-500/10 rounded-lg p-4">
                   <div className="text-2xl font-bold text-purple-400">Throttle</div>
                   <div className="text-sm text-muted-foreground">15% importance</div>
                   <p className="text-xs text-muted-foreground mt-2">
@@ -288,7 +270,7 @@ model = GradientBoostingRegressor(
             </TabsContent>
 
             <TabsContent value="correlation" className="space-y-4 mt-6">
-              <div className="bg-gradient-to-br from-red-900/20 to-black border border-red-500/30 rounded-lg p-6">
+              <div className="bg-gradient-to-br from-red-900/20 to-black rounded-lg p-6">
                 <h3 className="font-semibold text-red-400 mb-4">High Correlation Pairs (|r| &gt; 0.7)</h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="bg-black/40 rounded-lg p-3">
@@ -327,10 +309,10 @@ model = GradientBoostingRegressor(
       </Card>
 
       {/* Training Pipeline */}
-      <Card className="bg-black/40 border-yellow-500/20">
+      <Card className="bg-slate-900/20 transition-colors backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-yellow-400">Training Pipeline</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">Training Pipeline</CardTitle>
+          <CardDescription className="text-slate-400">
             End-to-end workflow from raw data to production model
           </CardDescription>
         </CardHeader>
@@ -452,10 +434,10 @@ model = GradientBoostingRegressor(
       </Card>
 
       {/* Performance Analysis */}
-      <Card className="bg-black/40 border-yellow-500/20">
+      <Card className="bg-slate-900/20 transition-colors backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-yellow-400">Performance Analysis</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">Performance Analysis</CardTitle>
+          <CardDescription className="text-slate-400">
             Model accuracy and real-world validation
           </CardDescription>
         </CardHeader>
@@ -481,7 +463,7 @@ model = GradientBoostingRegressor(
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+            <div className="bg-green-500/10 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2 className="w-5 h-5 text-green-400" />
                 <span className="font-semibold">Excellent Fit</span>
@@ -490,7 +472,7 @@ model = GradientBoostingRegressor(
                 Predicted values closely track actual consumption with minimal deviation
               </p>
             </div>
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+            <div className="bg-blue-500/10 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-5 h-5 text-blue-400" />
                 <span className="font-semibold">Captures Trends</span>
@@ -499,7 +481,7 @@ model = GradientBoostingRegressor(
                 Model successfully predicts spikes (lap 6, 9) and efficient laps (lap 4)
               </p>
             </div>
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4">
+            <div className="bg-purple-500/10 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <AlertCircle className="w-5 h-5 text-purple-400" />
                 <span className="font-semibold">Real-Time Ready</span>
@@ -543,15 +525,15 @@ model = GradientBoostingRegressor(
       </Card>
 
       {/* Real-World Integration */}
-      <Card className="bg-black/40 border-yellow-500/20">
+      <Card className="bg-slate-900/20 transition-colors backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-yellow-400">Real-World Integration</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl bg-gradient-to-r from-amber-300 to-orange-400 bg-clip-text text-transparent">Real-World Integration</CardTitle>
+          <CardDescription className="text-slate-400">
             From predictions to strategic recommendations
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="bg-gradient-to-br from-red-900/30 to-black border border-red-500/50 rounded-lg p-6">
+          <div className="bg-gradient-to-br from-red-900/30 to-black rounded-lg p-6">
             <h3 className="font-semibold text-red-400 mb-4 flex items-center gap-2">
               <AlertCircle className="w-5 h-5" />
               Critical Fuel Event Detection
@@ -578,10 +560,10 @@ model = GradientBoostingRegressor(
                 </div>
               </div>
 
-              <div className="bg-gray-900/50 p-4 rounded-lg">
-                <div className="font-semibold text-yellow-400 mb-2">Example Alert Output:</div>
-                <pre className="text-xs font-mono text-muted-foreground leading-relaxed">
-{`🔴 FUEL CRITICAL: 4.2L remaining
+              <CodeBlock
+                title="Example Alert Output"
+                language="text"
+                code={`🔴 FUEL CRITICAL: 4.2L remaining
    → 53 laps of fuel left (at 0.079L/lap consumption)
    → Consumption: 0.079L/lap
    📍 ACTION: Box THIS LAP for fuel
@@ -589,8 +571,7 @@ model = GradientBoostingRegressor(
 🟡 FUEL CONSUMPTION SPIKE
    → Consumption increased by 12% (0.071 → 0.079L/lap)
    💡 TIP: Lift and coast in high-speed sections to conserve fuel`}
-                </pre>
-              </div>
+              />
             </div>
           </div>
         </CardContent>
@@ -600,18 +581,10 @@ model = GradientBoostingRegressor(
 }
 
 // Helper Components
-function MetricCard({ label, value }: any) {
-  return (
-    <div className="bg-black/40 backdrop-blur-sm rounded-lg p-3 border border-yellow-500/20">
-      <div className="text-xs text-muted-foreground mb-1">{label}</div>
-      <div className="text-lg font-bold text-yellow-400">{value}</div>
-    </div>
-  );
-}
 
 function FeatureGroup({ title, features }: any) {
   return (
-    <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-800">
+    <div className="bg-gray-900/50 rounded-lg p-4 ">
       <h4 className="font-semibold text-cyan-400 mb-3">{title}</h4>
       <div className="grid grid-cols-2 gap-2">
         {features.map((f: any, i: number) => (
@@ -627,15 +600,15 @@ function FeatureGroup({ title, features }: any) {
 
 function TrainingStep({ number, title, icon, color, details, metrics }: any) {
   const colors: any = {
-    cyan: 'bg-cyan-500/20 border-cyan-500/50 text-cyan-400',
-    purple: 'bg-purple-500/20 border-purple-500/50 text-purple-400',
-    green: 'bg-green-500/20 border-green-500/50 text-green-400',
-    yellow: 'bg-yellow-500/20 border-yellow-500/50 text-yellow-400',
+    cyan: 'bg-cyan-500/20 text-cyan-400',
+    purple: 'bg-purple-500/20 text-purple-400',
+    green: 'bg-green-500/20 text-green-400',
+    yellow: 'bg-yellow-500/20 text-yellow-400',
   };
 
   return (
     <div className="flex gap-4">
-      <div className={`flex-shrink-0 w-12 h-12 rounded-lg ${colors[color]} border flex items-center justify-center font-bold text-lg`}>
+      <div className={`flex-shrink-0 w-12 h-12 rounded-lg ${colors[color]} flex items-center justify-center font-bold text-lg`}>
         {number}
       </div>
       <div className="flex-1">

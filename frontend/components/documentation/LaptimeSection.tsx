@@ -8,6 +8,7 @@ import {
   Zap, TrendingUp, Brain, Layers, Clock, Target, CheckCircle2, Code, Eye
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, AreaChart, Area } from 'recharts';
+import { DocumentationHeader, CodeBlock, DocumentationTabs } from './shared';
 
 // Sample data for visualizations
 const sequencePredictionData = [
@@ -43,34 +44,21 @@ export default function LaptimeSection() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-900/30 via-blue-900/30 to-black border border-purple-500/30 p-8">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:30px_30px]" />
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-              <Zap className="w-7 h-7 text-white" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-black text-purple-400">
-                LAP TIME TRANSFORMER
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Sequence-to-Sequence Attention Model for Multi-Lap Time Prediction
-              </p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-4 gap-4 mt-6">
-            <MetricCard label="Architecture" value="Transformer" />
-            <MetricCard label="MAE" value="0.42s" />
-            <MetricCard label="R² Score" value="0.94" />
-            <MetricCard label="Inference" value="18ms" />
-          </div>
-        </div>
-      </div>
+      <DocumentationHeader
+        icon={Zap}
+        title="LAP TIME TRANSFORMER"
+        subtitle="Sequence-to-Sequence Attention Model for Multi-Lap Time Prediction"
+        color="purple"
+        metrics={[
+          { label: 'Architecture', value: 'Transformer' },
+          { label: 'MAE', value: '0.42s' },
+          { label: 'R² Score', value: '0.94' },
+          { label: 'Inference', value: '18ms' }
+        ]}
+      />
 
       {/* Model Overview */}
-      <Card className="bg-black/40 border-purple-500/20">
+      <Card className="bg-black/40">
         <CardHeader>
           <CardTitle className="text-2xl text-purple-400">Model Overview</CardTitle>
           <CardDescription>
@@ -84,7 +72,7 @@ export default function LaptimeSection() {
           </p>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gradient-to-br from-purple-900/20 to-black border border-purple-500/30 rounded-lg p-4">
+            <div className="bg-gradient-to-br from-purple-900/20 to-black rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Brain className="w-5 h-5 text-purple-400" />
                 <span className="font-semibold">Non-Linear Dependencies</span>
@@ -94,7 +82,7 @@ export default function LaptimeSection() {
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-900/20 to-black border border-blue-500/30 rounded-lg p-4">
+            <div className="bg-gradient-to-br from-blue-900/20 to-black rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Layers className="w-5 h-5 text-blue-400" />
                 <span className="font-semibold">Multi-Head Attention</span>
@@ -104,7 +92,7 @@ export default function LaptimeSection() {
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-cyan-900/20 to-black border border-cyan-500/30 rounded-lg p-4">
+            <div className="bg-gradient-to-br from-cyan-900/20 to-black rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Clock className="w-5 h-5 text-cyan-400" />
                 <span className="font-semibold">Positional Encoding</span>
@@ -114,7 +102,7 @@ export default function LaptimeSection() {
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-green-900/20 to-black border border-green-500/30 rounded-lg p-4">
+            <div className="bg-gradient-to-br from-green-900/20 to-black rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Zap className="w-5 h-5 text-green-400" />
                 <span className="font-semibold">Parallel Processing</span>
@@ -128,7 +116,7 @@ export default function LaptimeSection() {
       </Card>
 
       {/* Architecture Deep Dive */}
-      <Card className="bg-black/40 border-purple-500/20">
+      <Card className="bg-black/40">
         <CardHeader>
           <CardTitle className="text-2xl text-purple-400">Architecture Deep Dive</CardTitle>
           <CardDescription>
@@ -136,13 +124,10 @@ export default function LaptimeSection() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="bg-gray-900/50 rounded-lg p-6 font-mono text-sm space-y-3">
-            <div className="flex items-start gap-3">
-              <Code className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <div className="text-purple-400 font-semibold mb-2">PyTorch Transformer Implementation</div>
-                <pre className="text-muted-foreground leading-relaxed overflow-x-auto">
-{`import torch
+          <CodeBlock
+            title="PyTorch Transformer Implementation"
+            language="python"
+            code={`import torch
 import torch.nn as nn
 
 class LapTimeTransformer(nn.Module):
@@ -193,10 +178,7 @@ class LapTimeTransformer(nn.Module):
         
         # Project to lap time
         return self.output_proj(output).squeeze(-1)`}
-                </pre>
-              </div>
-            </div>
-          </div>
+          />
 
           <Separator />
 
@@ -255,7 +237,7 @@ class LapTimeTransformer(nn.Module):
                 parameters="64"
               />
             </div>
-            <div className="mt-4 bg-purple-500/10 border border-purple-500/30 rounded-lg p-4">
+            <div className="mt-4 bg-purple-500/10 rounded-lg p-4">
               <div className="flex justify-between items-center">
                 <span className="font-semibold text-purple-400">Total Parameters:</span>
                 <span className="font-mono text-2xl font-bold text-purple-400">49,344</span>
@@ -269,7 +251,7 @@ class LapTimeTransformer(nn.Module):
       </Card>
 
       {/* Attention Mechanism Visualization */}
-      <Card className="bg-black/40 border-purple-500/20">
+      <Card className="bg-black/40">
         <CardHeader>
           <CardTitle className="text-2xl text-purple-400">Attention Mechanism Visualization</CardTitle>
           <CardDescription>
@@ -303,19 +285,19 @@ class LapTimeTransformer(nn.Module):
           </div>
 
           <div className="grid grid-cols-3 gap-4 mt-4">
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
+            <div className="bg-purple-500/10 rounded-lg p-3">
               <div className="text-sm font-semibold mb-1">Lap-4 (85%)</div>
               <p className="text-xs text-muted-foreground">
                 Baseline pace reference - highest attention for establishing driver capability
               </p>
             </div>
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+            <div className="bg-blue-500/10 rounded-lg p-3">
               <div className="text-sm font-semibold mb-1">Lap-1 (52%)</div>
               <p className="text-xs text-muted-foreground">
                 Recent degradation trend - critical for short-term prediction
               </p>
             </div>
-            <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-3">
+            <div className="bg-cyan-500/10 rounded-lg p-3">
               <div className="text-sm font-semibold mb-1">Current (42%)</div>
               <p className="text-xs text-muted-foreground">
                 Cross-attention dominates - decoding from encoded memory
@@ -326,7 +308,7 @@ class LapTimeTransformer(nn.Module):
       </Card>
 
       {/* Training Pipeline */}
-      <Card className="bg-black/40 border-purple-500/20">
+      <Card className="bg-black/40">
         <CardHeader>
           <CardTitle className="text-2xl text-purple-400">Training Pipeline</CardTitle>
           <CardDescription>
@@ -377,7 +359,7 @@ class LapTimeTransformer(nn.Module):
       </Card>
 
       {/* Performance Analysis */}
-      <Card className="bg-black/40 border-purple-500/20">
+      <Card className="bg-black/40">
         <CardHeader>
           <CardTitle className="text-2xl text-purple-400">Performance Analysis</CardTitle>
           <CardDescription>
@@ -470,7 +452,7 @@ class LapTimeTransformer(nn.Module):
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+            <div className="bg-green-500/10 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2 className="w-5 h-5 text-green-400" />
                 <span className="font-semibold">Excellent Accuracy</span>
@@ -479,7 +461,7 @@ class LapTimeTransformer(nn.Module):
                 MAE of 0.42s across all circuits - within driver reaction time variability
               </p>
             </div>
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+            <div className="bg-blue-500/10 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp className="w-5 h-5 text-blue-400" />
                 <span className="font-semibold">Captures Trends</span>
@@ -488,7 +470,7 @@ class LapTimeTransformer(nn.Module):
                 Successfully predicts degradation acceleration and stint-end tire cliff
               </p>
             </div>
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4">
+            <div className="bg-purple-500/10 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Eye className="w-5 h-5 text-purple-400" />
                 <span className="font-semibold">Attention Insights</span>
@@ -502,7 +484,7 @@ class LapTimeTransformer(nn.Module):
       </Card>
 
       {/* Real-World Integration */}
-      <Card className="bg-black/40 border-purple-500/20">
+      <Card className="bg-black/40">
         <CardHeader>
           <CardTitle className="text-2xl text-purple-400">Real-World Integration</CardTitle>
           <CardDescription>
@@ -510,7 +492,7 @@ class LapTimeTransformer(nn.Module):
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="bg-gradient-to-br from-orange-900/30 to-black border border-orange-500/50 rounded-lg p-6">
+          <div className="bg-gradient-to-br from-orange-900/30 to-black rounded-lg p-6">
             <h3 className="font-semibold text-orange-400 mb-4 flex items-center gap-2">
               <Clock className="w-5 h-5" />
               Stint Strategy Optimization
@@ -518,9 +500,10 @@ class LapTimeTransformer(nn.Module):
             <p className="text-sm text-muted-foreground mb-4">
               The Transformer predicts when lap times will degrade beyond a target threshold, enabling optimal pit stop timing:
             </p>
-            <div className="bg-gray-900/50 p-4 rounded-lg">
-              <pre className="text-xs font-mono text-muted-foreground leading-relaxed">
-{`🟡 STINT DEGRADATION WARNING
+            <CodeBlock
+              title="Example Degradation Alert"
+              language="text"
+              code={`🟡 STINT DEGRADATION WARNING
 
 Current Lap: 18/30
 Predicted Next 5 Laps:
@@ -534,20 +517,19 @@ Predicted Next 5 Laps:
    • Current pace loss: ~2.5s/lap
    • Pit stop loss: 22s (includes out-lap)
    • Net gain by pitting now: ~15s over remaining stint`}
-              </pre>
-            </div>
+            />
           </div>
 
           <Separator />
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4">
+            <div className="bg-purple-500/10 rounded-lg p-4">
               <h4 className="font-semibold text-purple-400 mb-2">Traffic Predictions</h4>
               <p className="text-sm text-muted-foreground">
                 Combined with Traffic GNN, lap time forecasts predict post-pit track position and potential traffic losses.
               </p>
             </div>
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+            <div className="bg-blue-500/10 rounded-lg p-4">
               <h4 className="font-semibold text-blue-400 mb-2">Undercut/Overcut Analysis</h4>
               <p className="text-sm text-muted-foreground">
                 Predicts opponent degradation rates to determine optimal pit strategy (early undercut vs. late overcut).
@@ -561,20 +543,12 @@ Predicted Next 5 Laps:
 }
 
 // Helper Components
-function MetricCard({ label, value }: any) {
-  return (
-    <div className="bg-black/40 backdrop-blur-sm rounded-lg p-3 border border-purple-500/20">
-      <div className="text-xs text-muted-foreground mb-1">{label}</div>
-      <div className="text-lg font-bold text-purple-400">{value}</div>
-    </div>
-  );
-}
 
 function LayerCard({ number, title, description, inputShape, outputShape, parameters }: any) {
   return (
-    <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-800">
+    <div className="bg-gray-900/50 rounded-lg p-4 ">
       <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/50 flex items-center justify-center font-bold text-sm text-purple-400">
+        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center font-bold text-sm text-purple-400">
           {number}
         </div>
         <div className="flex-1">
@@ -603,7 +577,7 @@ function LayerCard({ number, title, description, inputShape, outputShape, parame
 function TrainingStep({ number, title, icon, details }: any) {
   return (
     <div className="flex gap-4">
-      <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-purple-500/20 border border-purple-500/50 flex items-center justify-center font-bold text-lg text-purple-400">
+      <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center font-bold text-lg text-purple-400">
         {number}
       </div>
       <div className="flex-1">

@@ -71,7 +71,7 @@ export default function RacingDashboard() {
 
       {/* Main Content */}
       <div className="container mx-auto px-6 py-6 relative z-10 flex-1 overflow-hidden">
-        <div className="grid grid-cols-12 gap-6 h-full">
+        <div className="grid grid-cols-12 gap-8 h-full">
           
           {/* LEFT COLUMN - Telemetry Charts */}
           <motion.div

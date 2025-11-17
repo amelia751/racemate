@@ -175,7 +175,7 @@ export default function TelemetryDisplay() {
                     </span>
                   </div>
                   <Progress 
-                    value={Math.min((telemetry.cum_brake_energy / 50000) * 100, 100)} 
+                    value={Math.min(((telemetry.cum_brake_energy || 0) / 50000) * 100, 100)} 
                     className="h-2"
                   />
                 </div>
@@ -187,7 +187,7 @@ export default function TelemetryDisplay() {
                     </span>
                   </div>
                   <Progress 
-                    value={Math.min((telemetry.cum_lateral_load / 100000) * 100, 100)} 
+                    value={Math.min(((telemetry.cum_lateral_load || 0) / 100000) * 100, 100)} 
                     className="h-2"
                   />
                 </div>

@@ -9,81 +9,60 @@ import {
   Fuel, Zap, Gauge, AlertTriangle, TrendingUp, Network, User, Cpu,
   CheckCircle2, ArrowRight, Database, Cloud, Sparkles
 } from 'lucide-react';
+import { DocumentationHeader } from './shared';
 
 export default function OverviewSection() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-cyan-900/30 via-purple-900/30 to-black border border-cyan-500/30 p-8">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:30px_30px]" />
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center">
-              <Cpu className="w-7 h-7 text-white" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-black bg-gradient-to-r from-cyan-400 via-purple-400 to-yellow-400 bg-clip-text text-transparent">
-                COGNIRACE ML PIPELINE
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Next-Generation Race Strategy Intelligence Platform
-              </p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="bg-black/40 backdrop-blur-sm rounded-lg p-4 border border-cyan-500/20">
-              <div className="text-3xl font-bold text-cyan-400">8</div>
-              <div className="text-sm text-muted-foreground">Specialized ML Models</div>
-            </div>
-            <div className="bg-black/40 backdrop-blur-sm rounded-lg p-4 border border-purple-500/20">
-              <div className="text-3xl font-bold text-purple-400">&lt;100ms</div>
-              <div className="text-sm text-muted-foreground">Real-Time Inference</div>
-            </div>
-            <div className="bg-black/40 backdrop-blur-sm rounded-lg p-4 border border-yellow-500/20">
-              <div className="text-3xl font-bold text-yellow-400">1M+</div>
-              <div className="text-sm text-muted-foreground">Training Data Points</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DocumentationHeader
+        icon={Cpu}
+        title="COGNIRACE ML PIPELINE"
+        subtitle="Next-Generation Race Strategy Intelligence Platform"
+        color="cyan"
+        metrics={[
+          { label: 'Specialized ML Models', value: '8' },
+          { label: 'Real-Time Inference', value: '<100ms' },
+          { label: 'Training Data Points', value: '1M+' }
+        ]}
+      />
 
       {/* Executive Summary */}
-      <Card className="bg-black/40 border-cyan-500/20">
+      <Card className="bg-slate-900/20 transition-colors backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-cyan-400">Executive Summary</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl bg-gradient-to-r from-cyan-300 to-cyan-400 bg-clip-text text-transparent">Executive Summary</CardTitle>
+          <CardDescription className="text-slate-400">
             Real-time race strategy optimization through event-driven machine learning
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <p className="text-muted-foreground leading-relaxed">
-            COGNIRACE represents a paradigm shift in motorsport strategy analysis. Unlike traditional telemetry 
-            systems that simply display data, our platform uses <strong className="text-cyan-400">8 specialized machine learning models</strong> working 
+          <p className="text-slate-300 leading-relaxed">
+            COGNIRACE represents a paradigm shift in motorsport strategy analysis. Unlike traditional telemetry
+            systems that simply display data, our platform uses <strong className="text-cyan-300">8 specialized machine learning models</strong> working
             in concert to detect critical race events and generate actionable strategic recommendations in real-time.
           </p>
-          
-          <div className="bg-gradient-to-r from-cyan-900/20 to-purple-900/20 border border-cyan-500/30 rounded-lg p-6">
-            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-yellow-400" />
+
+          <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-xl p-6">
+            <h3 className="font-semibold text-lg mb-4 flex items-center gap-2 text-slate-200">
+              <Sparkles className="w-5 h-5 text-amber-400" />
               <span>Core Innovation: Event-Driven Architecture</span>
             </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-              Traditional systems overwhelm race engineers with continuous data streams. COGNIRACE implements 
-              an <strong className="text-purple-400">intelligent filtering system</strong> that only surfaces recommendations when:
+            <p className="text-sm text-slate-300 leading-relaxed mb-4">
+              Traditional systems overwhelm race engineers with continuous data streams. COGNIRACE implements
+              an <strong className="text-purple-300">intelligent filtering system</strong> that only surfaces recommendations when:
             </p>
             <ul className="space-y-2 text-sm">
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                <span><strong className="text-red-400">1+ CRITICAL events</strong> are detected (low fuel, mechanical anomalies, pit window closing)</span>
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span className="text-slate-300"><strong className="text-rose-400">1+ CRITICAL events</strong> are detected (low fuel, mechanical anomalies, pit window closing)</span>
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                <span><strong className="text-orange-400">2+ HIGH severity events</strong> occur simultaneously (fuel spike + high speed, tire stress + traffic)</span>
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span className="text-slate-300"><strong className="text-orange-400">2+ HIGH severity events</strong> occur simultaneously (fuel spike + high speed, tire stress + traffic)</span>
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                <span>This reduces alert fatigue from <strong>100+ alerts/minute</strong> to <strong className="text-cyan-400">5-10 actionable recommendations per race</strong></span>
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <span className="text-slate-300">This reduces alert fatigue from <strong>100+ alerts/minute</strong> to <strong className="text-cyan-300">5-10 actionable recommendations per race</strong></span>
               </li>
             </ul>
           </div>
@@ -94,7 +73,7 @@ export default function OverviewSection() {
             <h3 className="font-semibold text-lg mb-4 text-purple-400">System Architecture Overview</h3>
             <div className="grid grid-cols-1 gap-4">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-yellow-500/20 border border-yellow-500/50 flex items-center justify-center">
+                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center">
                   <Database className="w-5 h-5 text-yellow-400" />
                 </div>
                 <div className="flex-1">
@@ -109,7 +88,7 @@ export default function OverviewSection() {
               <ArrowRight className="w-5 h-5 text-cyan-400 mx-auto" />
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-purple-500/20 border border-purple-500/50 flex items-center justify-center">
+                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
                   <Cpu className="w-5 h-5 text-purple-400" />
                 </div>
                 <div className="flex-1">
@@ -125,7 +104,7 @@ export default function OverviewSection() {
               <ArrowRight className="w-5 h-5 text-cyan-400 mx-auto" />
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-green-500/20 border border-green-500/50 flex items-center justify-center">
+                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
                   <Cloud className="w-5 h-5 text-green-400" />
                 </div>
                 <div className="flex-1">
@@ -140,7 +119,7 @@ export default function OverviewSection() {
               <ArrowRight className="w-5 h-5 text-cyan-400 mx-auto" />
 
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-cyan-500/20 border border-cyan-500/50 flex items-center justify-center">
+                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center">
                   <Zap className="w-5 h-5 text-cyan-400" />
                 </div>
                 <div className="flex-1">
@@ -158,10 +137,10 @@ export default function OverviewSection() {
       </Card>
 
       {/* Model Ecosystem */}
-      <Card className="bg-black/40 border-purple-500/20">
+      <Card className="bg-slate-900/20 transition-colors backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-purple-400">The 8-Model Ecosystem</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl bg-gradient-to-r from-purple-300 to-purple-400 bg-clip-text text-transparent">The 8-Model Ecosystem</CardTitle>
+          <CardDescription className="text-slate-400">
             Specialized neural networks working in harmony for comprehensive race intelligence
           </CardDescription>
         </CardHeader>
@@ -270,10 +249,10 @@ export default function OverviewSection() {
       </Card>
 
       {/* Performance Benchmarks */}
-      <Card className="bg-black/40 border-cyan-500/20">
+      <Card className="bg-slate-900/20 transition-colors backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-cyan-400">Performance Benchmarks</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl bg-gradient-to-r from-cyan-300 to-cyan-400 bg-clip-text text-transparent">Performance Benchmarks</CardTitle>
+          <CardDescription className="text-slate-400">
             Industry-leading inference speed and prediction accuracy
           </CardDescription>
         </CardHeader>
@@ -323,10 +302,10 @@ export default function OverviewSection() {
       </Card>
 
       {/* Technology Stack */}
-      <Card className="bg-black/40 border-purple-500/20">
+      <Card className="bg-slate-900/20 transition-colors backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-purple-400">Technology Stack</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-2xl bg-gradient-to-r from-purple-300 to-purple-400 bg-clip-text text-transparent">Technology Stack</CardTitle>
+          <CardDescription className="text-slate-400">
             Modern ML infrastructure built for production reliability
           </CardDescription>
         </CardHeader>
@@ -369,17 +348,17 @@ export default function OverviewSection() {
 // Helper Components
 function ModelCard({ icon, title, color, type, accuracy, latency, description }: any) {
   const colors: any = {
-    yellow: 'border-yellow-500/30 bg-yellow-500/5',
-    purple: 'border-purple-500/30 bg-purple-500/5',
-    red: 'border-red-500/30 bg-red-500/5',
-    orange: 'border-orange-500/30 bg-orange-500/5',
-    green: 'border-green-500/30 bg-green-500/5',
-    blue: 'border-blue-500/30 bg-blue-500/5',
-    cyan: 'border-cyan-500/30 bg-cyan-500/5',
+    yellow: 'bg-yellow-500/5',
+    purple: 'bg-purple-500/5',
+    red: 'bg-red-500/5',
+    orange: 'bg-orange-500/5',
+    green: 'bg-green-500/5',
+    blue: 'bg-blue-500/5',
+    cyan: 'bg-cyan-500/5',
   };
 
   return (
-    <div className={`${colors[color]} border rounded-lg p-4 space-y-3`}>
+    <div className={`${colors[color]} rounded-lg p-4 space-y-3`}>
       <div className="flex items-center gap-3">
         <div className={`text-${color}-400`}>{icon}</div>
         <div className="flex-1">
@@ -433,7 +412,7 @@ function AccuracyBar({ label, value, color }: any) {
 
 function TechBadge({ name, description }: any) {
   return (
-    <div className="bg-gray-900/50 rounded-lg p-2 border border-gray-800">
+    <div className="bg-gray-900/50 rounded-lg p-2">
       <div className="font-semibold text-xs">{name}</div>
       <div className="text-xs text-muted-foreground">{description}</div>
     </div>

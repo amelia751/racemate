@@ -8,6 +8,7 @@ import {
   Gauge, TrendingDown, Thermometer, Zap, AlertCircle, CheckCircle2, Code, Layers
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { DocumentationHeader, CodeBlock, DocumentationTabs } from './shared';
 
 // Sample data for visualizations
 const tireDegradationData = [
@@ -40,34 +41,21 @@ export default function TireSection() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-red-900/30 via-orange-900/30 to-black border border-red-500/30 p-8">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:30px_30px]" />
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
-              <Gauge className="w-7 h-7 text-white" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-black text-red-400">
-                TIRE DEGRADATION MODEL
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                CNN-LSTM Hybrid for Multi-Dimensional Tire Wear Prediction
-              </p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-4 gap-4 mt-6">
-            <MetricCard label="Architecture" value="CNN-LSTM" />
-            <MetricCard label="Wear Error" value="1.8%" />
-            <MetricCard label="R² Score" value="0.91" />
-            <MetricCard label="Inference" value="22ms" />
-          </div>
-        </div>
-      </div>
+      <DocumentationHeader
+        icon={Gauge}
+        title="TIRE DEGRADATION MODEL"
+        subtitle="CNN-LSTM Hybrid for Multi-Dimensional Tire Wear Prediction"
+        color="red"
+        metrics={[
+          { label: 'Architecture', value: 'CNN-LSTM' },
+          { label: 'Wear Error', value: '1.8%' },
+          { label: 'R² Score', value: '0.91' },
+          { label: 'Inference', value: '22ms' }
+        ]}
+      />
 
       {/* Model Overview */}
-      <Card className="bg-black/40 border-red-500/20">
+      <Card className="bg-black/40">
         <CardHeader>
           <CardTitle className="text-2xl text-red-400">Model Overview</CardTitle>
           <CardDescription>
@@ -81,7 +69,7 @@ export default function TireSection() {
           </p>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gradient-to-br from-red-900/20 to-black border border-red-500/30 rounded-lg p-4">
+            <div className="bg-gradient-to-br from-red-900/20 to-black rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Layers className="w-5 h-5 text-red-400" />
                 <span className="font-semibold">CNN Feature Extraction</span>
@@ -91,7 +79,7 @@ export default function TireSection() {
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-orange-900/20 to-black border border-orange-500/30 rounded-lg p-4">
+            <div className="bg-gradient-to-br from-orange-900/20 to-black rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingDown className="w-5 h-5 text-orange-400" />
                 <span className="font-semibold">LSTM Temporal Modeling</span>
@@ -101,7 +89,7 @@ export default function TireSection() {
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-yellow-900/20 to-black border border-yellow-500/30 rounded-lg p-4">
+            <div className="bg-gradient-to-br from-yellow-900/20 to-black rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Thermometer className="w-5 h-5 text-yellow-400" />
                 <span className="font-semibold">16-Dimensional Input</span>
@@ -111,7 +99,7 @@ export default function TireSection() {
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-green-900/20 to-black border border-green-500/30 rounded-lg p-4">
+            <div className="bg-gradient-to-br from-green-900/20 to-black rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Zap className="w-5 h-5 text-green-400" />
                 <span className="font-semibold">Per-Corner Predictions</span>
@@ -125,7 +113,7 @@ export default function TireSection() {
       </Card>
 
       {/* Architecture Deep Dive */}
-      <Card className="bg-black/40 border-red-500/20">
+      <Card className="bg-black/40">
         <CardHeader>
           <CardTitle className="text-2xl text-red-400">Architecture Deep Dive</CardTitle>
           <CardDescription>
@@ -133,12 +121,10 @@ export default function TireSection() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="bg-gray-900/50 rounded-lg p-6 font-mono text-sm space-y-3">
-            <div className="flex items-start gap-3">
-              <Code className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <div className="text-red-400 font-semibold mb-2">PyTorch CNN-LSTM Implementation</div>
-                <pre className="text-muted-foreground leading-relaxed overflow-x-auto">
+          <CodeBlock
+            title="PyTorch CNN-LSTM Implementation"
+            language="python"
+            code=
 {`import torch
 import torch.nn as nn
 
@@ -200,10 +186,7 @@ class TireDegradationModel(nn.Module):
         x = self.fc3(x)               # [batch, 4]
         
         return torch.sigmoid(x) * 100  # Output: wear % [0, 100]`}
-                </pre>
-              </div>
-            </div>
-          </div>
+          />
 
           <Separator />
 
@@ -251,7 +234,7 @@ class TireDegradationModel(nn.Module):
             </div>
           </div>
 
-          <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mt-6">
+          <div className="bg-red-500/10 rounded-lg p-4 mt-6">
             <div className="flex justify-between items-center">
               <span className="font-semibold text-red-400">Total Parameters:</span>
               <span className="font-mono text-2xl font-bold text-red-400">187,524</span>
@@ -264,7 +247,7 @@ class TireDegradationModel(nn.Module):
       </Card>
 
       {/* Feature Engineering */}
-      <Card className="bg-black/40 border-red-500/20">
+      <Card className="bg-black/40">
         <CardHeader>
           <CardTitle className="text-2xl text-red-400">16-Dimensional Feature Space</CardTitle>
           <CardDescription>
@@ -342,7 +325,7 @@ class TireDegradationModel(nn.Module):
 
             <TabsContent value="correlation" className="space-y-4 mt-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                <div className="bg-red-500/10 rounded-lg p-4">
                   <h4 className="font-semibold text-red-400 mb-2">Strong Correlations (r &gt; 0.7)</h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
@@ -359,7 +342,7 @@ class TireDegradationModel(nn.Module):
                     </div>
                   </div>
                 </div>
-                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                <div className="bg-green-500/10 rounded-lg p-4">
                   <h4 className="font-semibold text-green-400 mb-2">Asymmetry Insights</h4>
                   <p className="text-sm text-muted-foreground">
                     FL (front-left) wears 15-20% faster than FR on left-dominant circuits (Monaco). 
@@ -373,7 +356,7 @@ class TireDegradationModel(nn.Module):
       </Card>
 
       {/* Performance Visualization */}
-      <Card className="bg-black/40 border-red-500/20">
+      <Card className="bg-black/40">
         <CardHeader>
           <CardTitle className="text-2xl text-red-400">Performance Visualization</CardTitle>
           <CardDescription>
@@ -412,22 +395,22 @@ class TireDegradationModel(nn.Module):
           </div>
 
           <div className="grid grid-cols-4 gap-4">
-            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+            <div className="bg-red-500/10 rounded-lg p-3">
               <div className="text-2xl font-bold text-red-400">48%</div>
               <div className="text-xs text-muted-foreground">FL at Lap 30</div>
               <p className="text-xs text-muted-foreground mt-1">Critical - immediate pit required</p>
             </div>
-            <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-3">
+            <div className="bg-orange-500/10 rounded-lg p-3">
               <div className="text-2xl font-bold text-orange-400">54%</div>
               <div className="text-xs text-muted-foreground">FR at Lap 30</div>
               <p className="text-xs text-muted-foreground mt-1">High wear - 2-3 laps max</p>
             </div>
-            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+            <div className="bg-yellow-500/10 rounded-lg p-3">
               <div className="text-2xl font-bold text-yellow-400">68%</div>
               <div className="text-xs text-muted-foreground">RL at Lap 30</div>
               <p className="text-xs text-muted-foreground mt-1">Moderate - 5-7 laps remaining</p>
             </div>
-            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
+            <div className="bg-green-500/10 rounded-lg p-3">
               <div className="text-2xl font-bold text-green-400">64%</div>
               <div className="text-xs text-muted-foreground">RR at Lap 30</div>
               <p className="text-xs text-muted-foreground mt-1">Moderate - 5-7 laps remaining</p>
@@ -467,7 +450,7 @@ class TireDegradationModel(nn.Module):
       </Card>
 
       {/* Real-World Integration */}
-      <Card className="bg-black/40 border-red-500/20">
+      <Card className="bg-black/40">
         <CardHeader>
           <CardTitle className="text-2xl text-red-400">Real-World Integration</CardTitle>
           <CardDescription>
@@ -475,14 +458,15 @@ class TireDegradationModel(nn.Module):
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="bg-gradient-to-br from-red-900/30 to-black border border-red-500/50 rounded-lg p-6">
+          <div className="bg-gradient-to-br from-red-900/30 to-black rounded-lg p-6">
             <h3 className="font-semibold text-red-400 mb-4 flex items-center gap-2">
               <AlertCircle className="w-5 h-5" />
               Critical Tire Alert Example
             </h3>
-            <div className="bg-gray-900/50 p-4 rounded-lg">
-              <pre className="text-xs font-mono text-muted-foreground leading-relaxed">
-{`🔴 TIRE DEGRADATION CRITICAL
+            <CodeBlock
+              title="Example Tire Degradation Alert"
+              language="text"
+              code={`🔴 TIRE DEGRADATION CRITICAL
 
 Current Status (Lap 28):
   FL: 52% (CRITICAL) ← Asymmetric wear detected
@@ -499,12 +483,11 @@ Predicted Next 3 Laps:
    • Front-left entering danger zone (cliff < 40%)
    • High risk of puncture/performance cliff
    • Stint extension NOT recommended`}
-              </pre>
-            </div>
+            />
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+            <div className="bg-green-500/10 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2 className="w-5 h-5 text-green-400" />
                 <span className="font-semibold text-sm">Accurate Predictions</span>
@@ -513,7 +496,7 @@ Predicted Next 3 Laps:
                 1.8% mean error enables precise stint length planning and undercut/overcut timing
               </p>
             </div>
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+            <div className="bg-blue-500/10 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Gauge className="w-5 h-5 text-blue-400" />
                 <span className="font-semibold text-sm">Per-Corner Analysis</span>
@@ -522,7 +505,7 @@ Predicted Next 3 Laps:
                 Identifies asymmetric wear patterns specific to circuit layout (left vs. right bias)
               </p>
             </div>
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4">
+            <div className="bg-purple-500/10 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingDown className="w-5 h-5 text-purple-400" />
                 <span className="font-semibold text-sm">Cliff Detection</span>
@@ -539,18 +522,10 @@ Predicted Next 3 Laps:
 }
 
 // Helper Components
-function MetricCard({ label, value }: any) {
-  return (
-    <div className="bg-black/40 backdrop-blur-sm rounded-lg p-3 border border-red-500/20">
-      <div className="text-xs text-muted-foreground mb-1">{label}</div>
-      <div className="text-lg font-bold text-red-400">{value}</div>
-    </div>
-  );
-}
 
 function DimensionCard({ layer, shape, description }: any) {
   return (
-    <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-800">
+    <div className="bg-gray-900/50 rounded-lg p-3 ">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <div className="font-semibold text-sm mb-1">{layer}</div>
@@ -564,14 +539,14 @@ function DimensionCard({ layer, shape, description }: any) {
 
 function FeatureGroup({ title, color, features }: any) {
   const colors: any = {
-    red: 'text-red-400 border-red-500/30 bg-red-900/20',
-    orange: 'text-orange-400 border-orange-500/30 bg-orange-900/20',
-    yellow: 'text-yellow-400 border-yellow-500/30 bg-yellow-900/20',
-    green: 'text-green-400 border-green-500/30 bg-green-900/20',
+    red: 'text-red-400 bg-red-900/20',
+    orange: 'text-orange-400 bg-orange-900/20',
+    yellow: 'text-yellow-400 bg-yellow-900/20',
+    green: 'text-green-400 bg-green-900/20',
   };
 
   return (
-    <div className={`${colors[color]} border rounded-lg p-4`}>
+    <div className={`${colors[color]} rounded-lg p-4`}>
       <h4 className={`font-semibold mb-3 ${colors[color].split(' ')[0]}`}>{title}</h4>
       <ul className="space-y-1 text-xs text-muted-foreground">
         {features.map((f: string, i: number) => (
