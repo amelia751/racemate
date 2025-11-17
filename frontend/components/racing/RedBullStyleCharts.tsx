@@ -41,7 +41,7 @@ export const ThrottleBrakeTimeSeries = memo(function ThrottleBrakeTimeSeries() {
         <ResponsiveContainer width="100%" height="85%">
           <LineChart data={data} key="throttle-brake-chart">
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-            <XAxis hide />
+            <XAxis stroke="#22c55e" tick={{ fontSize: 10 }} />
             <YAxis stroke="#22c55e" domain={[0, 100]} />
             <Tooltip
               contentStyle={{ backgroundColor: '#000', border: '1px solid #22c55e' }}
@@ -84,7 +84,7 @@ export const GForceTimeSeries = memo(function GForceTimeSeries() {
         <ResponsiveContainer width="100%" height="85%">
           <LineChart data={data} key="gforce-chart">
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-            <XAxis hide />
+            <XAxis stroke="#a855f7" tick={{ fontSize: 10 }} />
             <YAxis stroke="#a855f7" domain={[-2, 2]} />
             <Tooltip
               contentStyle={{ backgroundColor: '#000', border: '1px solid #a855f7' }}

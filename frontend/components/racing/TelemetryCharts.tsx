@@ -34,7 +34,7 @@ const SpeedChart = memo(function SpeedChart({ data }: { data: TelemetryPoint[] }
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-            <XAxis hide />
+            <XAxis stroke="#00ffff" tick={{ fontSize: 10 }} />
             <YAxis stroke="#00ffff" domain={[100, 250]} />
             <Tooltip
               contentStyle={{ backgroundColor: '#000', border: '1px solid #00ffff' }}
@@ -61,23 +61,29 @@ const RPMChart = memo(function RPMChart({ data }: { data: TelemetryPoint[] }) {
       <CardContent className="pt-4 h-full">
         <div className="text-yellow-400 text-xs font-bold mb-2 tracking-wider">ENGINE RPM</div>
         <ResponsiveContainer width="100%" height="90%">
-          <LineChart data={data} key="rpm-chart">
+          <AreaChart data={data} key="rpm-chart">
+            <defs>
+              <linearGradient id="rpmGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#facc15" stopOpacity={0.8}/>
+                <stop offset="95%" stopColor="#facc15" stopOpacity={0}/>
+              </linearGradient>
+            </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-            <XAxis hide />
+            <XAxis stroke="#facc15" tick={{ fontSize: 10 }} />
             <YAxis stroke="#facc15" domain={[6000, 10000]} />
             <Tooltip
               contentStyle={{ backgroundColor: '#000', border: '1px solid #facc15' }}
               labelStyle={{ color: '#facc15' }}
             />
-            <Line
+            <Area
               type="monotone"
               dataKey="rpm"
               stroke="#facc15"
               strokeWidth={2}
-              dot={false}
+              fill="url(#rpmGradient)"
               isAnimationActive={false}
             />
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
       </CardContent>
     </Card>

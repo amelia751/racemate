@@ -229,7 +229,7 @@ export function BrakeSystemStatus() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={tempHistory} key="brake-temp-chart">
                 <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                <XAxis hide />
+                <XAxis stroke="#ef4444" tick={{ fontSize: 10 }} />
                 <YAxis stroke="#ef4444" domain={[300, 600]} tick={{ fontSize: 10 }} />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#000', border: '1px solid #ef4444' }}
