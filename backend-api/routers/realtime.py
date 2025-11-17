@@ -1,87 +1,194 @@
 """
-Real-Time WebSocket Endpoint for Cognirace
-Handles streaming telemetry and triggers agent recommendations
+Real-time telemetry processing and event-driven recommendations
 """
 
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from typing import Dict, Any
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from typing import Dict, Any, Optional, List
+import asyncio
 import json
 import logging
-import asyncio
+import time
+
 import sys
 import os
+# Add parent directory to path for agents import
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 
-# Add agents to path
-agents_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../agents'))
-if agents_path not in sys.path:
-    sys.path.insert(0, agents_path)
-
-from services.realtime_predictor import realtime_predictor
-from specialized.chief_agent import ChiefAgent
-from tools.api_client import CogniraceAPIClient
+from agents.specialized.chief_agent import ChiefAgent
+from services.realtime_predictor import RealtimePredictor
+from services.strategy_formatter import StrategyFormatter
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+# HTTP endpoint for testing
+class TelemetryRequest(BaseModel):
+    telemetry: Dict[str, Any]
 
+@router.post("/process")
+async def process_telemetry(request: TelemetryRequest):
+    """
+    HTTP endpoint to process telemetry and return events/recommendations
+    Useful for testing and debugging
+    """
+    try:
+        telemetry = request.telemetry
+        logger.info(f"Processing telemetry via HTTP: lap={telemetry.get('lap')}, fuel={telemetry.get('fuel_level'):.1f}L, speed={telemetry.get('speed'):.0f}km/h")
+        
+        # Initialize predictor if needed
+        predictor = RealtimePredictor()
+        
+        # Process telemetry - returns list of events or None
+        events = predictor.process_telemetry(telemetry)
+        if events is None:
+            events = []
+        
+        logger.info(f"Detected {len(events)} events: {[e.event_type for e in events]}")
+        
+        # Get predictions from predictor state  
+        predictions = {
+            'fuel_per_lap': getattr(predictor.state, 'last_fuel_prediction', 0.06),
+            'fuel_level': predictor.state.fuel_level,
+            'frame_count': predictor.frame_count
+        }
+        
+        # If we have critical or high severity events, generate recommendations
+        recommendations = None
+        critical_events = [e for e in events if e.severity in ['critical', 'high']]
+        
+        if critical_events:
+            try:
+                # Format ML predictions into professional recommendations (no LLM needed!)
+                formatter = StrategyFormatter()
+                strategy_text = formatter.format_recommendations(
+                    events=[{
+                        "type": e.event_type,
+                        "severity": e.severity,
+                        "message": e.message,
+                        "data": e.data
+                    } for e in critical_events],
+                    predictions=predictions,
+                    telemetry=telemetry
+                )
+                
+                recommendations = {
+                    "strategy": strategy_text,
+                    "severity_summary": {
+                        "critical": sum(1 for e in events if e.severity == 'critical'),
+                        "high": sum(1 for e in events if e.severity == 'high'),
+                        "medium": sum(1 for e in events if e.severity == 'medium'),
+                        "info": sum(1 for e in events if e.severity == 'info')
+                    },
+                    "events": [
+                        {
+                            "type": e.event_type,
+                            "severity": e.severity,
+                            "message": e.message,
+                            "data": e.data
+                        }
+                        for e in events
+                    ]
+                }
+                
+                logger.info(f"Generated professional recommendation for {len(critical_events)} events")
+                
+            except Exception as e:
+                logger.error(f"Failed to generate recommendation: {e}")
+                recommendations = {
+                    "strategy": f"⚠️ Unable to generate recommendations: {str(e)}",
+                    "events": [{"type": e.event_type, "severity": e.severity, "message": e.message} for e in critical_events]
+                }
+        
+        return {
+            "success": True,
+            "events": [
+                {
+                    "type": e.event_type,
+                    "severity": e.severity,
+                    "message": e.message,
+                    "data": e.data
+                }
+                for e in events
+            ],
+            "recommendations": recommendations,
+            "predictions": predictions,
+            "timestamp": time.time()
+        }
+        
+    except Exception as e:
+        logger.error(f"Error processing telemetry: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# WebSocket endpoint (existing)
 class RealtimeSession:
-    """Manages a real-time telemetry session"""
+    """Manages a single WebSocket session for real-time telemetry processing"""
     
-    def __init__(self):
-        self.predictor = realtime_predictor
-        # Don't use API client in backend - we already have the predictions!
-        self.chief_agent = ChiefAgent(
-            api_client=None,  # No API calls needed, we have direct access to models
-            use_gemini=True
-        )
-        self.frame_count = 0
-        self.gemini_call_count = 0
+    def __init__(self, websocket: WebSocket):
+        self.websocket = websocket
+        self.predictor = RealtimePredictor()
+        self.chief_agent = ChiefAgent(use_gemini=True, api_client=None)
         self.last_gemini_call = 0
         logger.info("RealtimeSession initialized with ChiefAgent (direct mode)")
     
-    async def process_telemetry(self, telemetry: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Process telemetry through models, detect events, and generate recommendations
-        Only sends recommendations for critical/high severity events
-        """
-        self.frame_count += 1
-        
-        # Run through all 8 models and detect events
-        events = self.predictor.process_telemetry(telemetry)
-        
-        if events:
-            # Filter to only critical and high severity events
-            important_events = [e for e in events if e.severity in ['critical', 'high']]
+    async def process_telemetry(self, telemetry: Dict[str, Any]):
+        """Process incoming telemetry and send back recommendations if needed"""
+        try:
+            # Run predictions and detect events
+            events = self.predictor.process_telemetry(telemetry)
+            if events is None:
+                events = []
             
-            if important_events:
-                logger.info(f"Frame {self.frame_count}: {len(important_events)} important event(s) detected")
+            # Get predictions from predictor state
+            predictions = {
+                'fuel_per_lap': getattr(self.predictor.state, 'last_fuel_prediction', 0.06),
+                'fuel_level': self.predictor.state.fuel_level,
+                'frame_count': self.predictor.frame_count
+            }
+            
+            # Filter for critical and high severity events only
+            critical_events = [e for e in events if e.severity in ['critical', 'high']]
+            
+            if critical_events:
+                logger.info(f"Detected {len(critical_events)} critical/high events: {[e.event_type for e in critical_events]}")
                 
-                # Generate comprehensive recommendations using multi-agent system
-                recommendations = await self._generate_recommendations(important_events, telemetry)
+                # Generate recommendations
+                recommendations = await self._generate_recommendations(critical_events, telemetry, predictions)
                 
-                return {
-                    'type': 'recommendation',
-                    'frame': self.frame_count,
-                    'events': [e.to_dict() for e in important_events],
-                    'recommendations': recommendations,
-                    'timestamp': telemetry.get('timestamp')
-                }
-        
-        # No important events, don't send anything
-        return None
+                if recommendations:
+                    # Send recommendations back to frontend
+                    await self.websocket.send_json({
+                        "type": "recommendation",
+                        "recommendations": recommendations,
+                        "timestamp": time.time()
+                    })
+            
+        except Exception as e:
+            logger.error(f"Error in process_telemetry: {e}")
+            await self.websocket.send_json({
+                "type": "error",
+                "message": str(e)
+            })
     
-    async def _generate_recommendations(self, events, telemetry: Dict[str, Any]) -> Dict[str, Any]:
+    async def _generate_recommendations(
+        self, 
+        events: List[Any], 
+        telemetry: Dict[str, Any],
+        predictions: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         """
-        Generate comprehensive recommendations using multi-agent system
+        Generate AI-powered recommendations based on detected events
         Rate-limited to avoid quota issues
         Only returns when Gemini is called (no quick analysis spam)
         """
         import time
         
-        # Rate limiting: Only call Gemini every 20 seconds
+        # Rate limiting: Only call Gemini every 10 seconds
         current_time = time.time()
-        if current_time - self.last_gemini_call < 20:
+        if current_time - self.last_gemini_call < 10:
             # Too soon, skip this recommendation
             return None
         
@@ -91,140 +198,84 @@ class RealtimeSession:
             for e in events
         ])
         
-        # Build comprehensive analysis without API calls
-        analysis_parts = []
-        
-        # Analyze each event type
-        for event in events:
-            if event.event_type.startswith('FUEL'):
-                analysis_parts.append(f"🔴 FUEL ALERT: {event.message}")
-            elif event.event_type.startswith('TIRE'):
-                analysis_parts.append(f"🟠 TIRE WARNING: {event.message}")
-            elif event.event_type.startswith('ANOMALY'):
-                analysis_parts.append(f"🚨 ANOMALY: {event.message}")
-            elif event.event_type.startswith('FCY'):
-                analysis_parts.append(f"🟡 FCY FORECAST: {event.message}")
-            elif event.event_type.startswith('PACE'):
-                analysis_parts.append(f"📊 PACE UPDATE: {event.message}")
-            elif event.event_type.startswith('PIT'):
-                analysis_parts.append(f"⏱️ PIT STRATEGY: {event.message}")
-            else:
-                analysis_parts.append(f"ℹ️ {event.message}")
-        
-        quick_strategy = "\n".join(analysis_parts)
-        
-        # Use Gemini for deeper analysis (rate-limited)
-        try:
-            query = f"""Race Strategy Analysis:
-
-DETECTED EVENTS:
-{event_summary}
-
-CURRENT TELEMETRY:
+        enhanced_context = f"""
+Current Race Status:
 - Lap: {telemetry.get('lap', 1)}
 - Speed: {telemetry.get('speed', 0):.0f} km/h
-- Fuel: {telemetry.get('fuel_level', 35.0):.1f}L
-- Throttle: {telemetry.get('aps', telemetry.get('throttle', 0)):.0f}%
+- Fuel Level: {telemetry.get('fuel_level', 0):.1f}L
+- RPM: {telemetry.get('rpm', telemetry.get('nmot', 0)):.0f}
+- Gear: {telemetry.get('gear', 0)}
+- Throttle: {telemetry.get('throttle', telemetry.get('aps', 0)):.0f}%
 
-Provide concise (max 3 sentences) strategic recommendation focusing on:
-1. Immediate action required
-2. Risk level
-3. Next strategic decision point"""
-            
-            context = {
-                'telemetry': telemetry,
-                'events': event_summary,
-                'race_info': {
-                    'lap': telemetry.get('lap', 1),
-                    'fuel_level': telemetry.get('fuel_level', 35.0),
-                    'track': 'Barber Motorsports Park'
-                }
-            }
-            
-            # Call Gemini through ChiefAgent
-            gemini_response = self.chief_agent.generate_with_gemini(query, context)
+Critical Events Detected:
+{event_summary}
+
+ML Model Predictions:
+{json.dumps(predictions, indent=2)}
+"""
+        
+        try:
+            # Call Gemini for comprehensive analysis
+            prompt = f"""Analyze these {len(events)} critical race events and provide strategic recommendations:
+
+{enhanced_context}
+"""
+            gemini_response = self.chief_agent.generate_with_gemini(
+                prompt=prompt,
+                context=telemetry
+            )
             
             self.last_gemini_call = current_time
-            self.gemini_call_count += 1
             
-            # Only show Gemini analysis (no quick strategy spam)
-            strategy = f"🤖 AI RACE STRATEGIST:\n\n{gemini_response}\n\n📊 Detected Events:\n{quick_strategy}"
-            
-            return {
-                'strategy': strategy,
-                'event_count': len(events),
-                'severity_summary': self._summarize_severity(events),
-                'gemini_calls': self.gemini_call_count
+            recommendations = {
+                "strategy": gemini_response,
+                "severity_summary": {
+                    "critical": sum(1 for e in events if e.severity == 'critical'),
+                    "high": sum(1 for e in events if e.severity == 'high'),
+                    "medium": sum(1 for e in events if e.severity == 'medium'),
+                    "info": sum(1 for e in events if e.severity == 'info')
+                },
+                "events": [
+                    {
+                        "type": e.event_type,
+                        "severity": e.severity,
+                        "message": e.message,
+                        "data": e.data
+                    }
+                    for e in events
+                ]
             }
-        
+            
+            logger.info(f"Generated Gemini recommendation for {len(events)} events")
+            return recommendations
+            
         except Exception as e:
-            logger.error(f"Gemini call failed: {e}")
-            # If Gemini fails, don't send anything
+            logger.error(f"Gemini recommendation failed: {e}")
             return None
-    
-    def _summarize_severity(self, events) -> Dict[str, int]:
-        """Count events by severity"""
-        severity_count = {'critical': 0, 'high': 0, 'medium': 0, 'low': 0, 'info': 0}
-        for event in events:
-            severity_count[event.severity] += 1
-        return severity_count
 
 
 @router.websocket("/ws/telemetry")
-async def telemetry_websocket(websocket: WebSocket):
-    """
-    WebSocket endpoint for real-time telemetry streaming
-    
-    Frontend sends: {"telemetry": {...}, "timestamp": "..."}
-    Backend responds: {"type": "recommendation|status", ...}
-    """
+async def websocket_telemetry(websocket: WebSocket):
+    """WebSocket endpoint for real-time telemetry streaming"""
     await websocket.accept()
-    session = RealtimeSession()
-    
     logger.info("WebSocket connection established")
+    
+    session = RealtimeSession(websocket)
     
     try:
         while True:
-            # Receive telemetry from frontend
-            data = await websocket.receive_text()
-            message = json.loads(data)
+            # Receive telemetry data
+            data = await websocket.receive_json()
             
-            if 'telemetry' in message:
-                telemetry = message['telemetry']
-                
-                # Process through models and agents
-                response = await session.process_telemetry(telemetry)
-                
-                # Only send if there's a recommendation (filters out None)
-                if response:
-                    await websocket.send_text(json.dumps(response))
+            if "telemetry" in data:
+                telemetry = data["telemetry"]
+                await session.process_telemetry(telemetry)
             
-            else:
-                # Invalid message format
-                await websocket.send_text(json.dumps({
-                    'type': 'error',
-                    'message': 'Invalid message format. Expected {"telemetry": {...}}'
-                }))
-    
     except WebSocketDisconnect:
-        logger.info("WebSocket connection closed")
+        logger.info("WebSocket disconnected")
     except Exception as e:
-        logger.error(f"WebSocket error: {e}", exc_info=True)
+        logger.error(f"WebSocket error: {e}")
         try:
-            await websocket.send_text(json.dumps({
-                'type': 'error',
-                'message': str(e)
-            }))
+            await websocket.close()
         except:
             pass
-
-
-@router.get("/realtime/status")
-async def realtime_status():
-    """Check real-time system status"""
-    return {
-        'status': 'operational',
-        'predictor_loaded': realtime_predictor.models_loaded,
-        'frame_count': realtime_predictor.frame_count
-    }
-

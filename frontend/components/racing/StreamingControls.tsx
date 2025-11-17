@@ -2,14 +2,14 @@
 
 /**
  * Streaming Controls - F1 Style
- * Controls for telemetry simulation
+ * Controls for telemetry simulation with ROBUST scenarios
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Play, Square, Zap, Settings } from 'lucide-react';
+import { Play, Square, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCogniraceStore } from '@/lib/store';
 
@@ -17,64 +17,221 @@ interface StreamingControlsProps {
   onStreamingChange?: (isStreaming: boolean) => void;
 }
 
+// Robust scenario generator
+const generateScenario = (frameCount: number) => {
+  const scenarios = [
+    // Scenario 1: FUEL CRISIS (immediate)
+    {
+      name: 'FUEL_CRISIS',
+      data: {
+        speed: 180 + Math.random() * 20,
+        rpm: 8000 + Math.random() * 1000,
+        gear: 5,
+        throttle: 75 + Math.random() * 15,
+        fuel_level: 4 + Math.random() * 2, // CRITICAL LOW FUEL
+        lap: 18,
+        cum_brake_energy: 30000 + Math.random() * 5000,
+        cum_lateral_load: 50000 + Math.random() * 10000,
+        air_temp: 28
+      }
+    },
+    // Scenario 2: HIGH SPEED + LOW FUEL
+    {
+      name: 'HIGH_SPEED_LOW_FUEL',
+      data: {
+        speed: 195 + Math.random() * 10, // HIGH SPEED
+        rpm: 9000 + Math.random() * 500,
+        gear: 6,
+        throttle: 90 + Math.random() * 10,
+        fuel_level: 8 + Math.random() * 2, // LOW FUEL
+        lap: 15,
+        cum_brake_energy: 28000 + Math.random() * 3000,
+        cum_lateral_load: 48000 + Math.random() * 8000,
+        air_temp: 27
+      }
+    },
+    // Scenario 3: ANOMALY (high RPM, low speed - potential issue)
+    {
+      name: 'ANOMALY_DETECTED',
+      data: {
+        speed: 95 + Math.random() * 20, // LOW SPEED
+        rpm: 10500 + Math.random() * 500, // VERY HIGH RPM - ANOMALY
+        gear: 3,
+        throttle: 85 + Math.random() * 10,
+        fuel_level: 22 + Math.random() * 5,
+        lap: 10,
+        cum_brake_energy: 35000 + Math.random() * 5000,
+        cum_lateral_load: 55000 + Math.random() * 10000,
+        air_temp: 29
+      }
+    },
+    // Scenario 4: OPTIMAL PERFORMANCE (for contrast)
+    {
+      name: 'OPTIMAL',
+      data: {
+        speed: 170 + Math.random() * 15,
+        rpm: 7500 + Math.random() * 1000,
+        gear: 5,
+        throttle: 70 + Math.random() * 15,
+        fuel_level: 30 + Math.random() * 5,
+        lap: 8,
+        cum_brake_energy: 20000 + Math.random() * 3000,
+        cum_lateral_load: 40000 + Math.random() * 8000,
+        air_temp: 26
+      }
+    },
+    // Scenario 5: EXTREME CONDITIONS
+    {
+      name: 'EXTREME',
+      data: {
+        speed: 200 + Math.random() * 5, // VERY HIGH SPEED
+        rpm: 10000 + Math.random() * 1000,
+        gear: 6,
+        throttle: 100, // FULL THROTTLE
+        fuel_level: 6 + Math.random() * 2, // LOW FUEL
+        lap: 20,
+        cum_brake_energy: 40000 + Math.random() * 5000,
+        cum_lateral_load: 60000 + Math.random() * 10000,
+        air_temp: 32 // HIGH TEMP
+      }
+    },
+    // Scenario 6: TIRE STRESS
+    {
+      name: 'TIRE_STRESS',
+      data: {
+        speed: 185 + Math.random() * 15,
+        rpm: 8500 + Math.random() * 1000,
+        gear: 5,
+        throttle: 80 + Math.random() * 15,
+        fuel_level: 15 + Math.random() * 5,
+        lap: 22, // HIGH LAP COUNT - TIRE WEAR
+        cum_brake_energy: 45000 + Math.random() * 5000, // HIGH BRAKE ENERGY
+        cum_lateral_load: 65000 + Math.random() * 10000, // HIGH LATERAL LOAD
+        air_temp: 30
+      }
+    }
+  ];
+  
+  // Cycle through scenarios every 5 frames (5 seconds at 1Hz)
+  const scenarioIndex = Math.floor(frameCount / 5) % scenarios.length;
+  const scenario = scenarios[scenarioIndex];
+  
+  // Add common fields
+  const telemetry = {
+    ...scenario.data,
+    nmot: scenario.data.rpm,
+    aps: scenario.data.throttle
+  };
+  
+  return { scenario: scenario.name, telemetry };
+};
+
 export default function StreamingControls({ onStreamingChange }: StreamingControlsProps) {
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [dataRate, setDataRate] = useState(10); // Hz
-  const [currentFuel, setCurrentFuel] = useState(50); // Start with full tank
-  const { addDebugLog } = useCogniraceStore();
-
-  const { setTelemetry } = useCogniraceStore();
-
-  const startStreaming = () => {
-    setIsStreaming(true);
-    onStreamingChange?.(true);
-    setCurrentFuel(50); // Reset fuel to full tank when streaming starts
-    addDebugLog('info', 'Telemetry streaming started', { rate: dataRate });
-
-    // Simulate telemetry updates
+  const [dataRate, setDataRate] = useState(1); // 1 Hz for better observation
+  const [frameCount, setFrameCount] = useState(0);
+  const [currentScenario, setCurrentScenario] = useState('');
+  const { addDebugLog, setTelemetry, isStreaming, setIsStreaming: setStreamingStore } = useCogniraceStore();
+  
+  // Simulate telemetry updates when streaming - SEND TO BACKEND VIA API
+  useEffect(() => {
+    if (!isStreaming) return;
+    
+    let frameCounter = 0;
+    
     const interval = setInterval(() => {
-      // Fuel decreases by ~0.3-0.7L per update (noticeable decrease)
-      setCurrentFuel(prev => Math.max(0, prev - (0.3 + Math.random() * 0.4)));
-
-      setCurrentFuel(fuel => {
-        const telemetry = {
-          speed: 150 + Math.random() * 50,
-          rpm: 7000 + Math.random() * 2000,
-          nmot: 7000 + Math.random() * 2000,
-          gear: Math.floor(Math.random() * 6) + 1,
-          throttle: 60 + Math.random() * 40,
-          aps: 60 + Math.random() * 40,
-          lap: 13,
-          fuel_level: fuel,
-          cum_brake_energy: 25000 + Math.random() * 5000,
-          cum_lateral_load: 45000 + Math.random() * 10000,
-          air_temp: 26 + Math.random() * 2,
-        };
-
-        // Update store with real data
+      frameCounter++;
+      
+      // Generate scenario-based telemetry
+      const { scenario, telemetry } = generateScenario(frameCounter);
+      
+      // Update UI state in next tick to avoid render conflicts
+      setTimeout(() => {
+        setFrameCount(frameCounter);
+        setCurrentScenario(scenario);
         setTelemetry(telemetry);
-        addDebugLog('success', 'Telemetry updated', {
-          speed: Math.round(telemetry.speed),
-          rpm: Math.round(telemetry.rpm || 0),
-          gear: telemetry.gear,
-          fuel: fuel.toFixed(1)
-        });
-
-        return fuel;
+      }, 0);
+      
+      // Log frame to debug panel (only every 10 frames to reduce noise)
+      if (frameCounter % 10 === 0) {
+        setTimeout(() => {
+          addDebugLog('info', `📊 Frame ${frameCounter}: ${scenario}`, {
+            fuel: telemetry.fuel_level,
+            speed: telemetry.speed
+          });
+        }, 0);
+      }
+      
+      // Send to backend via API route
+      fetch('/api/telemetry/stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(telemetry)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.recommendations) {
+          // Store recommendation in window for VoiceStrategist to display
+          if (typeof window !== 'undefined') {
+            (window as any).__latestRecommendation = {
+              ...data.recommendations,
+              scenario: scenario,
+              timestamp: Date.now()
+            };
+          }
+          
+          // Only log significant events
+          const critical = data.recommendations.severity_summary?.critical || 0;
+          const high = data.recommendations.severity_summary?.high || 0;
+          if (critical > 0 || high >= 2) {
+            setTimeout(() => {
+              addDebugLog('warn', `⚠️ ${scenario}: C:${critical} H:${high}`, {
+                events: data.events?.length || 0
+              });
+            }, 0);
+          }
+        }
+      })
+      .catch(err => {
+        setTimeout(() => {
+          addDebugLog('error', `❌ Backend API Error`, {
+            message: err.message,
+            scenario
+          });
+        }, 0);
       });
     }, 1000 / dataRate);
 
-    // Store interval for cleanup
-    (window as any).telemetryInterval = interval;
+    return () => clearInterval(interval);
+  }, [isStreaming, dataRate, setTelemetry, addDebugLog]);
+
+  const startStreaming = () => {
+    console.log('[StreamingControls] START STREAMING clicked');
+    
+    setStreamingStore(true); // Update global store
+    onStreamingChange?.(true);
+    setFrameCount(0);
+    
+    // Clear previous logs to focus on this streaming session (deferred)
+    setTimeout(() => {
+      (window as any).__clearDebugLogs?.();
+      addDebugLog('success', '🏁 START STREAMING - Robust scenario testing begins', { 
+        scenarios: 6,
+        rate: `${dataRate} Hz`,
+        note: 'Cycling through: FUEL_CRISIS, HIGH_SPEED, ANOMALY, OPTIMAL, EXTREME, TIRE_STRESS'
+      });
+    }, 100);
   };
 
   const stopStreaming = () => {
-    setIsStreaming(false);
+    console.log('[StreamingControls] STOP STREAMING clicked');
+    
+    setStreamingStore(false); // Update global store
     onStreamingChange?.(false);
-    if ((window as any).telemetryInterval) {
-      clearInterval((window as any).telemetryInterval);
-    }
-    addDebugLog('warn', 'Telemetry streaming stopped');
+    
+    setTimeout(() => {
+      addDebugLog('warn', '⏸️ STOP STREAMING - Session ended', { frames_sent: frameCount });
+      setFrameCount(0);
+    }, 100);
   };
 
   return (
@@ -125,48 +282,27 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
               )}
             </div>
 
-            {/* Data Rate Control */}
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs">
-                <span className="text-muted-foreground">Update Rate</span>
-                <span className="text-cyan-400 font-bold">{dataRate} Hz</span>
+            {/* Status Info */}
+            {isStreaming && (
+              <div className="text-xs space-y-1 p-3 bg-black/40 rounded border border-cyan-500/20">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Current Scenario:</span>
+                  <span className="text-cyan-400 font-mono">{currentScenario}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Frames Sent:</span>
+                  <span className="text-cyan-400 font-mono">{frameCount}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Update Rate:</span>
+                  <span className="text-cyan-400 font-mono">{dataRate} Hz</span>
+                </div>
               </div>
-              <input
-                type="range"
-                min="1"
-                max="20"
-                value={dataRate}
-                onChange={(e) => setDataRate(Number(e.target.value))}
-                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-              />
-            </div>
+            )}
 
-            {/* Quick Actions */}
-            <div className="grid grid-cols-3 gap-2 pt-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-xs"
-                onClick={() => addDebugLog('info', 'Lap 13 started')}
-              >
-                📍 Lap 13
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-xs"
-                onClick={() => addDebugLog('warn', 'Pit window open')}
-              >
-                🏁 Pit
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-xs"
-                onClick={() => addDebugLog('error', 'FCY deployed')}
-              >
-                🚨 FCY
-              </Button>
+            {/* Info */}
+            <div className="text-xs text-center text-muted-foreground p-2">
+              Simulating real-time telemetry to trigger AI recommendations
             </div>
           </div>
         </CardContent>
@@ -174,4 +310,3 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
     </motion.div>
   );
 }
-

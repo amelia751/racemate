@@ -16,14 +16,14 @@ export default function LapTimeDisplay() {
   const [sector, setSector] = useState(2);
 
   return (
-    <div className="h-full flex flex-col justify-between">
+    <div className="flex flex-col gap-3">
       {/* Main Lap Time */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         className="text-center"
       >
-        <div className="text-yellow-400 text-5xl font-black tracking-tighter font-mono mb-3">
+        <div className="text-yellow-400 text-5xl font-black tracking-tighter font-mono">
           {lapTime}
         </div>
       </motion.div>

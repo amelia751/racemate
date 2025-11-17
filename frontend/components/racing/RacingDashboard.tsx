@@ -16,7 +16,7 @@ import { ThrottleBrakeTimeSeries, GForceTimeSeries } from './RedBullStyleCharts'
 import { FuelConsumptionChart, TireTemperatureDisplay, BrakeSystemStatus } from './EnhancedVisualizations';
 import HeroMetrics from './HeroMetrics';
 import VoiceStrategist from '@/components/VoiceStrategist';
-import DebugLayer from '@/components/DebugLayer';
+// import DebugLayer from '@/components/DebugLayer'; // Hidden for production demo
 
 export default function RacingDashboard() {
   const [mounted, setMounted] = useState(false);
@@ -37,7 +37,7 @@ export default function RacingDashboard() {
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-hidden flex flex-col">
+    <div className="min-h-screen h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-hidden flex flex-col">
       {/* Animated Background Grid */}
       <div className="fixed inset-0 pointer-events-none opacity-10">
         <div className="absolute inset-0" style={{
@@ -58,10 +58,6 @@ export default function RacingDashboard() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="text-3xl font-black tracking-tighter">
-                <span className="text-cyan-400">COGNI</span>
-                <span className="text-yellow-400">RACE</span>
-              </div>
               {isStreaming && (
                 <Badge variant="default" className="text-xs bg-green-500 text-white animate-pulse">
                   ● LIVE
@@ -74,7 +70,7 @@ export default function RacingDashboard() {
       </motion.header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 py-6 relative z-10 flex-1">
+      <div className="container mx-auto px-6 py-6 relative z-10 flex-1 overflow-hidden">
         <div className="grid grid-cols-12 gap-6 h-full">
           
           {/* LEFT COLUMN - Telemetry Charts */}
@@ -82,11 +78,11 @@ export default function RacingDashboard() {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="col-span-9 space-y-4 overflow-y-auto pr-2"
-            style={{ maxHeight: 'calc(100vh - 140px)' }}
+            className="col-span-9 space-y-4 overflow-y-auto overflow-x-hidden pr-2 h-full"
+            style={{ minHeight: 0 }}
           >
             {/* Lap Time & Current Status - Side by Side */}
-            <div className="grid grid-cols-2 gap-4 h-[180px]">
+            <div className="grid grid-cols-2 gap-4 h-auto">
               {/* Lap Time Info - Left */}
               <Card className="bg-black/40 backdrop-blur-sm">
                 <CardContent className="pt-4 h-full">
@@ -130,34 +126,17 @@ export default function RacingDashboard() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="col-span-3"
+            className="col-span-3 flex flex-col h-full"
+            style={{ minHeight: 0 }}
           >
-            <Card className="bg-black/40 backdrop-blur-sm h-full flex flex-col">
-              <div className="px-4 py-3 bg-yellow-500/5">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-                  <span className="text-xs font-bold tracking-wider text-yellow-400">
-                    AI RACE STRATEGIST
-                  </span>
-                </div>
-              </div>
-              <div className="flex-1 overflow-hidden">
-                <VoiceStrategist />
-              </div>
-            </Card>
+            <VoiceStrategist />
           </motion.div>
 
         </div>
       </div>
 
-      {/* Animated Corner Accents */}
-      <div className="fixed top-0 left-0 w-32 h-32 border-t-2 border-l-2 border-cyan-500/50 pointer-events-none" />
-      <div className="fixed top-0 right-0 w-32 h-32 border-t-2 border-r-2 border-yellow-500/50 pointer-events-none" />
-      <div className="fixed bottom-0 left-0 w-32 h-32 border-b-2 border-l-2 border-purple-500/50 pointer-events-none" />
-      <div className="fixed bottom-0 right-0 w-32 h-32 border-b-2 border-r-2 border-red-500/50 pointer-events-none" />
-
-      {/* Debug Layer */}
-      <DebugLayer />
+      {/* Debug Layer - Hidden for clean demo */}
+      {/* <DebugLayer /> */}
     </div>
   );
 }

@@ -103,34 +103,34 @@ export default function VoiceChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gradient-to-b from-gray-900 via-black to-black">
       {/* Header */}
-      <div className="border-b border-border bg-card p-4">
+      <div className="border-b border-cyan-500/20 bg-gradient-to-r from-cyan-900/30 to-purple-900/30 px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Bot className="w-6 h-6 text-primary" />
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center">
+              <Bot className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="font-semibold">AI Race Strategist</h2>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <h2 className="text-sm font-bold tracking-wide text-cyan-400">AI RACE STRATEGIST</h2>
+              <div className="flex items-center gap-2 text-[9px] text-gray-400 tracking-wide font-mono mt-0.5">
                 {!isAgentReady ? (
                   <>
                     <Loader2 className="w-3 h-3 animate-spin" />
-                    <span>Connecting...</span>
+                    <span>CONNECTING</span>
                   </>
                 ) : (
                   <>
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <span>Online</span>
+                    <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                    <span>ONLINE</span>
                   </>
                 )}
               </div>
             </div>
           </div>
-          <Badge variant="outline" className="gap-1">
+          <Badge variant="outline" className="gap-1 bg-black/50 border-cyan-500/30 text-[10px] font-bold tracking-wider text-cyan-400">
             <Mic className="w-3 h-3" />
-            Voice Enabled
+            VOICE
           </Badge>
         </div>
       </div>
@@ -164,20 +164,23 @@ export default function VoiceChatInterface() {
       )}
 
       {/* Messages Area */}
-      <ScrollArea 
-        className="flex-1 px-4" 
+      <ScrollArea
+        className="flex-1 px-4"
         onScroll={handleScroll}
         ref={scrollAreaRef}
       >
-        <div className="py-4 space-y-4 max-w-3xl mx-auto">
+        <div className="py-4 space-y-3 max-w-3xl mx-auto">
           {messages.length === 0 && isAgentReady && (
-            <Card className="border-dashed">
-              <CardContent className="pt-6 text-center space-y-2">
-                <p className="text-muted-foreground text-sm">
-                  Waiting for agent greeting...
+            <div className="flex items-center justify-center h-[200px]">
+              <div className="text-center space-y-3">
+                <div className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto">
+                  <Bot className="w-8 h-8 text-cyan-400" />
+                </div>
+                <p className="text-gray-400 text-[11px] font-medium tracking-wide">
+                  AWAITING AGENT GREETING
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
 
           {messages.map((message, idx) => (
@@ -188,38 +191,32 @@ export default function VoiceChatInterface() {
                 message.sender === 'driver' ? 'justify-end' : 'justify-start'
               )}
             >
-              <Card
-                className={cn(
-                  'max-w-[80%]',
-                  message.sender === 'driver'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted'
-                )}
-              >
-                <CardContent className="pt-4 pb-3 px-4">
-                  <div className="flex items-start gap-2">
-                    {message.sender === 'agent' && (
-                      <Bot className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                    )}
-                    <div className="flex-1">
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                        {message.content}
-                      </p>
-                      <p className={cn(
-                        "text-xs mt-1",
-                        message.sender === 'driver' 
-                          ? 'text-primary-foreground/70' 
-                          : 'text-muted-foreground'
-                      )}>
-                        {message.timestamp.toLocaleTimeString()}
-                      </p>
-                    </div>
+              {message.sender === 'driver' ? (
+                <div className="max-w-[80%]">
+                  <div className="bg-gradient-to-br from-cyan-600 to-cyan-700 rounded-xl rounded-tr-sm px-3 py-2 shadow-lg shadow-cyan-500/20">
+                    <p className="text-xs text-white leading-relaxed whitespace-pre-wrap font-medium">
+                      {message.content}
+                    </p>
+                    <p className="text-[9px] text-cyan-200/60 mt-1.5 font-mono">
+                      {message.timestamp.toLocaleTimeString()}
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              ) : (
+                <div className="max-w-[80%]">
+                  <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl rounded-tl-sm px-3 py-2 shadow-lg shadow-gray-800/50">
+                    <p className="text-xs text-gray-100 leading-relaxed whitespace-pre-wrap font-medium">
+                      {message.content}
+                    </p>
+                    <p className="text-[9px] text-gray-500 mt-1.5 font-mono">
+                      {message.timestamp.toLocaleTimeString()}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
-          
+
           <div ref={messagesEndRef} />
         </div>
       </ScrollArea>
@@ -238,7 +235,7 @@ export default function VoiceChatInterface() {
       )}
 
       {/* Input Area */}
-      <div className="border-t border-border bg-card p-4">
+      <div className="border-t border-cyan-500/20 bg-gradient-to-t from-black via-gray-900 to-transparent px-4 py-4 flex-shrink-0">
         <div className="max-w-3xl mx-auto">
           {inputMode === 'voice' ? (
             // Voice Mode
@@ -247,10 +244,10 @@ export default function VoiceChatInterface() {
                 onClick={() => setInputMode('text')}
                 variant="outline"
                 size="icon"
-                className="rounded-full w-12 h-12"
+                className="rounded-full w-12 h-12 border-cyan-500/30 hover:border-cyan-400/60 hover:bg-cyan-500/10 transition-all"
                 disabled={!isAgentReady}
               >
-                <Keyboard className="h-5 w-5" />
+                <Keyboard className="h-5 w-5 text-cyan-400" />
               </Button>
 
               {/* Main Mic Button */}
@@ -258,8 +255,8 @@ export default function VoiceChatInterface() {
                 onClick={handleMicClick}
                 disabled={!isAgentReady}
                 className={cn(
-                  'rounded-full w-20 h-20 transition-all duration-300',
-                  isListening && 'scale-110 shadow-lg shadow-primary/50'
+                  'rounded-full w-20 h-20 transition-all duration-300 bg-gradient-to-br from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 shadow-lg',
+                  isListening && 'scale-110 shadow-cyan-500/50'
                 )}
               >
                 {!isAgentReady ? (
@@ -276,16 +273,15 @@ export default function VoiceChatInterface() {
                 )}
               </Button>
 
-              <div className="w-12" /> {/* Spacer for symmetry */}
+              <div className="w-12" />
             </div>
           ) : (
             // Text Mode
             <div className="flex items-center space-x-2">
               <Button
                 onClick={() => setInputMode('voice')}
-                variant="default"
                 size="icon"
-                className="rounded-full w-12 h-12 flex-shrink-0"
+                className="rounded-full w-12 h-12 flex-shrink-0 bg-gradient-to-br from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 shadow-lg transition-all"
                 disabled={!isAgentReady}
               >
                 <Mic className="h-5 w-5" />
@@ -300,7 +296,7 @@ export default function VoiceChatInterface() {
                     ? 'Connecting...'
                     : 'Ask about fuel, tires, strategy...'
                 }
-                className="flex-1 px-4 py-3 rounded-full border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
+                className="flex-1 px-4 py-3 rounded-full border border-cyan-500/30 bg-gray-900/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all disabled:opacity-50"
                 disabled={!isAgentReady}
               />
 
@@ -308,7 +304,7 @@ export default function VoiceChatInterface() {
                 onClick={handleSendMessage}
                 disabled={!textInput.trim() || !isAgentReady}
                 size="icon"
-                className="rounded-full w-12 h-12 flex-shrink-0"
+                className="rounded-full w-12 h-12 flex-shrink-0 bg-gradient-to-br from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 shadow-lg transition-all disabled:opacity-50"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -328,13 +324,13 @@ export default function VoiceChatInterface() {
           )}
 
           {/* Status Text */}
-          <p className="text-center text-xs text-muted-foreground mt-3">
+          <p className="text-center text-[10px] text-cyan-400/70 mt-3 font-mono tracking-wide">
             {isListening ? (
-              <span className="text-primary font-medium">Listening...</span>
+              <span className="font-bold text-cyan-400">LISTENING</span>
             ) : isAgentReady ? (
-              'Tap the mic to start talking'
+              'TAP MIC TO SPEAK'
             ) : (
-              'Connecting to AI strategist...'
+              'CONNECTING'
             )}
           </p>
         </div>

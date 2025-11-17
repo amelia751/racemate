@@ -343,12 +343,12 @@ class RealtimePredictor:
                     'current_fuel': self.state.fuel_level
                 }
             ))
-        elif fuel_prediction > self.state.last_fuel_prediction * 1.15:
+        elif fuel_prediction > self.state.last_fuel_prediction * 1.10:  # Lowered from 1.15 to 1.10
             events.append(RaceEvent(
                 event_type='FUEL_CONSUMPTION_SPIKE',
                 severity='high',
-                message=f'Fuel consumption spiked: {fuel_prediction:.3f}L/lap (+15%)',
-                data={'fuel_per_lap': fuel_prediction, 'increase_pct': 15}
+                message=f'Fuel consumption spiked: {fuel_prediction:.3f}L/lap (+10%)',
+                data={'fuel_per_lap': fuel_prediction, 'increase_pct': 10}
             ))
         
         # 2. TIRE CRITICAL
@@ -371,17 +371,17 @@ class RealtimePredictor:
         
         # 3. ANOMALY DETECTED
         anomaly_score = predictions.get('anomaly', 0.0)
-        if anomaly_score > 0.7:
+        if anomaly_score > 0.6:  # Lowered from 0.7 to 0.6
             events.append(RaceEvent(
                 event_type='ANOMALY_CRITICAL',
                 severity='critical',
                 message=f'Critical anomaly detected (score: {anomaly_score:.2f})',
                 data={'anomaly_score': anomaly_score, 'telemetry_snapshot': telemetry}
             ))
-        elif anomaly_score > 0.5:
+        elif anomaly_score > 0.4:  # Lowered from 0.5 to 0.4
             events.append(RaceEvent(
                 event_type='ANOMALY_WARNING',
-                severity='medium',
+                severity='high',  # Changed from medium to high
                 message=f'Anomaly detected (score: {anomaly_score:.2f})',
                 data={'anomaly_score': anomaly_score}
             ))
@@ -467,6 +467,26 @@ class RealtimePredictor:
         
         # Update traffic state
         self.state.last_traffic_density = traffic
+        
+        # Low fuel warning (always check current fuel level)
+        current_fuel = telemetry.get('fuel_level', self.state.fuel_level)
+        if current_fuel < 10.0:  # Less than 10L remaining
+            events.append(RaceEvent(
+                event_type='LOW_FUEL',
+                severity='critical' if current_fuel < 5.0 else 'high',
+                message=f'Low fuel warning: {current_fuel:.1f}L remaining',
+                data={'fuel_remaining': current_fuel}
+            ))
+        
+        # High speed event (for testing event detection)
+        speed = telemetry.get('speed', 0)
+        if speed > 190:
+            events.append(RaceEvent(
+                event_type='HIGH_SPEED',
+                severity='info',
+                message=f'High speed detected: {speed:.0f} km/h',
+                data={'speed': speed}
+            ))
         
         return events
 
