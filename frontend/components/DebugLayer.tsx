@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Copy, Trash2, X, Maximize2, Minimize2, Activity, Wifi, Server, Zap, CheckCircle, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 
 interface LogEntry {
   timestamp: Date;
@@ -85,7 +85,7 @@ export default function DebugLayer() {
   const [backendStatus, setBackendStatus] = useState<'online' | 'offline' | 'checking'>('checking');
   const [wsConnected, setWsConnected] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { telemetryData, debugLogs: storeDebugLogs } = useCogniraceStore();
+  const { telemetryData, debugLogs: storeDebugLogs } = useRaceMateStore();
 
   // Subscribe to log updates
   useEffect(() => {

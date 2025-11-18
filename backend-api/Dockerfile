@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create model cache directory
-RUN mkdir -p /tmp/cognirace_models
+RUN mkdir -p /tmp/racemate_models
 
 # Expose port (Cloud Run will set PORT env var)
 ENV PORT=8080

@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { BarChart, Bar, RadialBarChart, RadialBar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 
 export function GForceGauge() {
   const [gForce, setGForce] = useState({ lateral: 0, longitudinal: 0 });
@@ -163,7 +163,7 @@ export function TirePressureGrid() {
 }
 
 export function FuelGauge() {
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
   const fuelLevel = telemetryData?.fuel_level || 35.2;
   const fuelPercentage = (fuelLevel / 50) * 100;
 

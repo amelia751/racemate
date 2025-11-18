@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Play, Square, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 
 interface StreamingControlsProps {
   onStreamingChange?: (isStreaming: boolean) => void;
@@ -130,7 +130,7 @@ export default function StreamingControls({ onStreamingChange }: StreamingContro
   const [dataRate, setDataRate] = useState(1); // 1 Hz for better observation
   const [frameCount, setFrameCount] = useState(0);
   const [currentScenario, setCurrentScenario] = useState('');
-  const { addDebugLog, setTelemetry, isStreaming, setIsStreaming: setStreamingStore } = useCogniraceStore();
+  const { addDebugLog, setTelemetry, isStreaming, setIsStreaming: setStreamingStore } = useRaceMateStore();
   
   // Simulate telemetry updates when streaming - SEND TO BACKEND VIA API
   useEffect(() => {

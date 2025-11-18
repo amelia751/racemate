@@ -7,7 +7,7 @@
 
 import { memo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 
 // Memoized individual metric component to prevent unnecessary re-renders
 const MetricDisplay = memo(function MetricDisplay({
@@ -51,7 +51,7 @@ const MetricDisplay = memo(function MetricDisplay({
 });
 
 export default memo(function HeroMetrics() {
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
 
   const metrics = [
     {

@@ -1,5 +1,5 @@
 """
-Prediction endpoints for all Cognirace models
+Prediction endpoints for all RaceMate models
 """
 
 from fastapi import APIRouter, HTTPException

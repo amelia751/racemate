@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Create and deploy Vertex AI endpoints for all 8 Cognirace models
+Create and deploy Vertex AI endpoints for all 8 RaceMate models
 Handles endpoint creation, model registration, deployment, and testing
 """
 
@@ -73,7 +73,7 @@ class VertexAIDeployer:
             endpoint = aiplatform.Endpoint.create(
                 display_name=endpoint_display_name,
                 description=f"Endpoint for {endpoint_display_name}",
-                labels={"project": "cognirace", "phase": "2"}
+                labels={"project": "racemate", "phase": "2"}
             )
             print(f"  ✓ Created new endpoint: {endpoint.resource_name}")
         
@@ -99,8 +99,8 @@ class VertexAIDeployer:
                 display_name=model_display_name,
                 artifact_uri=model_gcs_uri,
                 serving_container_image_uri="us-docker.pkg.dev/vertex-ai/prediction/pytorch-cpu.1-13:latest",
-                description=f"Cognirace {model_display_name}",
-                labels={"project": "cognirace", "phase": "2"}
+                description=f"RaceMate {model_display_name}",
+                labels={"project": "racemate", "phase": "2"}
             )
             print(f"  ✓ Model uploaded: {model.resource_name}")
         
@@ -162,55 +162,55 @@ class VertexAIDeployer:
             return {"status": "will_use_direct_loading", "reason": str(e)[:200]}
     
     def deploy_all_models(self):
-        """Deploy all 8 Cognirace models"""
+        """Deploy all 8 RaceMate models"""
         
         models_config = [
             {
                 "name": "fuel_consumption",
-                "display_name": "Cognirace Fuel Consumption",
-                "endpoint_name": "cognirace-fuel-predictor",
+                "display_name": "RaceMate Fuel Consumption",
+                "endpoint_name": "racemate-fuel-predictor",
                 "gcs_path": f"gs://{settings.gcs_bucket_models}/fuel_consumption/"
             },
             {
                 "name": "lap_time_transformer",
-                "display_name": "Cognirace Lap Time Predictor",
-                "endpoint_name": "cognirace-laptime-predictor",
+                "display_name": "RaceMate Lap Time Predictor",
+                "endpoint_name": "racemate-laptime-predictor",
                 "gcs_path": f"gs://{settings.gcs_bucket_models}/lap_time_transformer/"
             },
             {
                 "name": "tire_degradation",
-                "display_name": "Cognirace Tire Degradation",
-                "endpoint_name": "cognirace-tire-predictor",
+                "display_name": "RaceMate Tire Degradation",
+                "endpoint_name": "racemate-tire-predictor",
                 "gcs_path": f"gs://{settings.gcs_bucket_models}/tire_degradation/"
             },
             {
                 "name": "fcy_hazard",
-                "display_name": "Cognirace FCY Hazard",
-                "endpoint_name": "cognirace-fcy-predictor",
+                "display_name": "RaceMate FCY Hazard",
+                "endpoint_name": "racemate-fcy-predictor",
                 "gcs_path": f"gs://{settings.gcs_bucket_models}/fcy_hazard/"
             },
             {
                 "name": "pit_loss",
-                "display_name": "Cognirace Pit Loss",
-                "endpoint_name": "cognirace-pitloss-predictor",
+                "display_name": "RaceMate Pit Loss",
+                "endpoint_name": "racemate-pitloss-predictor",
                 "gcs_path": f"gs://{settings.gcs_bucket_models}/pit_loss/"
             },
             {
                 "name": "anomaly_detector",
-                "display_name": "Cognirace Anomaly Detector",
-                "endpoint_name": "cognirace-anomaly-detector",
+                "display_name": "RaceMate Anomaly Detector",
+                "endpoint_name": "racemate-anomaly-detector",
                 "gcs_path": f"gs://{settings.gcs_bucket_models}/anomaly_detector/"
             },
             {
                 "name": "driver_embedding",
-                "display_name": "Cognirace Driver Embedding",
-                "endpoint_name": "cognirace-driver-analyzer",
+                "display_name": "RaceMate Driver Embedding",
+                "endpoint_name": "racemate-driver-analyzer",
                 "gcs_path": f"gs://{settings.gcs_bucket_models}/driver_embedding/"
             },
             {
                 "name": "traffic_gnn",
-                "display_name": "Cognirace Traffic GNN",
-                "endpoint_name": "cognirace-traffic-analyzer",
+                "display_name": "RaceMate Traffic GNN",
+                "endpoint_name": "racemate-traffic-analyzer",
                 "gcs_path": f"gs://{settings.gcs_bucket_models}/traffic_gnn/"
             }
         ]

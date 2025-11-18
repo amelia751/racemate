@@ -1,5 +1,5 @@
 """
-Model loading service for Cognirace API
+Model loading service for RaceMate API
 Downloads models from GCS and caches them locally
 """
 

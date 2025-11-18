@@ -6,7 +6,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -14,7 +14,7 @@ import { Bot } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MessageDisplay() {
-  const messages = useCogniraceStore((state) => state.messages);
+  const messages = useRaceMateStore((state) => state.messages);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages arrive

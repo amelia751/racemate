@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     api_log_level: str = "info"
     
     # Model Cache
-    model_cache_dir: str = "/tmp/cognirace_models"
+    model_cache_dir: str = "/tmp/racemate_models"
     model_cache_ttl: int = 3600
     
     # Prediction Settings

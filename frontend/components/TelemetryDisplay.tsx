@@ -5,7 +5,7 @@
  * Shows real-time telemetry data in a fixed-height scrollable area
  */
 
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -13,7 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 
 export default function TelemetryDisplay() {
-  const telemetry = useCogniraceStore((state) => state.telemetryData);
+  const telemetry = useRaceMateStore((state) => state.telemetryData);
 
   if (!telemetry) {
     return (

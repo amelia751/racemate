@@ -20,7 +20,7 @@ def run_complete_pipeline():
     """Run the complete data processing pipeline"""
     
     print("="*60)
-    print("COGNIRACE DATA PROCESSING PIPELINE")
+    print("RACEMATE DATA PROCESSING PIPELINE")
     print("="*60)
     
     # Step 1: Parse CSVs

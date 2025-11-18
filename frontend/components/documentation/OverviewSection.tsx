@@ -17,7 +17,7 @@ export default function OverviewSection() {
       {/* Hero Section */}
       <DocumentationHeader
         icon={Cpu}
-        title="COGNIRACE ML PIPELINE"
+        title="RACEMATE ML PIPELINE"
         subtitle="Next-Generation Race Strategy Intelligence Platform"
         color="cyan"
         metrics={[
@@ -37,7 +37,7 @@ export default function OverviewSection() {
         </CardHeader>
         <CardContent className="space-y-6">
           <p className="text-slate-300 leading-relaxed">
-            COGNIRACE represents a paradigm shift in motorsport strategy analysis. Unlike traditional telemetry
+            RACEMATE represents a paradigm shift in motorsport strategy analysis. Unlike traditional telemetry
             systems that simply display data, our platform uses <strong className="text-cyan-300">8 specialized machine learning models</strong> working
             in concert to detect critical race events and generate actionable strategic recommendations in real-time.
           </p>
@@ -48,7 +48,7 @@ export default function OverviewSection() {
               <span>Core Innovation: Event-Driven Architecture</span>
             </h3>
             <p className="text-sm text-slate-300 leading-relaxed mb-4">
-              Traditional systems overwhelm race engineers with continuous data streams. COGNIRACE implements
+              Traditional systems overwhelm race engineers with continuous data streams. RACEMATE implements
               an <strong className="text-purple-300">intelligent filtering system</strong> that only surfaces recommendations when:
             </p>
             <ul className="space-y-2 text-sm">
@@ -111,7 +111,7 @@ export default function OverviewSection() {
                   <div className="font-semibold text-green-400 mb-1">Cloud Deployment</div>
                   <p className="text-sm text-muted-foreground">
                     Models exported as PyTorch (.pth) or Pickle (.pkl) files and stored in Google Cloud Storage 
-                    (gs://cognirace-models). FastAPI backend loads models on startup for sub-100ms inference latency.
+                    (gs://racemate-models). FastAPI backend loads models on startup for sub-100ms inference latency.
                   </p>
                 </div>
               </div>

@@ -6,7 +6,7 @@
  */
 
 import { useState, useRef, useEffect } from 'react';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 import { apiClient } from '@/lib/api-client';
 import { debugLogger } from './DebugPanel';
 import { useLiveKitContext } from '@/lib/livekit/LiveKitContext';
@@ -21,7 +21,7 @@ export default function TelemetrySimulator() {
   const [currentLap, setCurrentLap] = useState(1);
   const [speed, setSpeed] = useState(150);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const { setTelemetry } = useCogniraceStore();
+  const { setTelemetry } = useRaceMateStore();
   const { sendTextMessage, isAgentReady } = useLiveKitContext();
 
   // Mock telemetry data generator

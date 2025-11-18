@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 import { useLiveKitContext } from '@/lib/livekit/LiveKitContext';
 import { Mic, MicOff, Keyboard, ChevronDown, Loader2, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -31,13 +31,13 @@ export default function VoiceChatInterface() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
-  const { messages, addMessage, raceContext } = useCogniraceStore();
+  const { messages, addMessage, raceContext } = useRaceMateStore();
   const { isConnected, isAgentReady, isConnecting, connect, sendTextMessage, error: connectionError } = useLiveKitContext();
 
   // Auto-connect on mount
   useEffect(() => {
     if (!isConnected && !isConnecting) {
-      const roomName = `cognirace-${Date.now()}`;
+      const roomName = `racemate-${Date.now()}`;
       const driverName = 'Driver-1';
       connect(roomName, driverName);
     }

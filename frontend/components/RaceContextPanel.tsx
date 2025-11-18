@@ -5,13 +5,13 @@
  * Displays and allows editing of current race context
  */
 
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
 export default function RaceContextPanel() {
-  const { raceContext, setRaceContext } = useCogniraceStore();
+  const { raceContext, setRaceContext } = useRaceMateStore();
 
   const updateField = (field: string, value: string) => {
     setRaceContext({

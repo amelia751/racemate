@@ -108,7 +108,7 @@ export default function DebugPanel() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `cognirace-logs-${Date.now()}.txt`;
+    a.download = `racemate-logs-${Date.now()}.txt`;
     a.click();
     URL.revokeObjectURL(url);
     

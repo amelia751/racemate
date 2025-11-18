@@ -8,7 +8,7 @@
 import { useEffect, useState, memo } from 'react';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent } from '@/components/ui/card';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 
 interface TelemetryPoint {
   id: number; // Stable key for chart data
@@ -101,7 +101,7 @@ const RPMChart = memo(function RPMChart({ data }: { data: TelemetryPoint[] }) {
 export default memo(function TelemetryCharts() {
   const [data, setData] = useState<TelemetryPoint[]>([]);
   const [pointId, setPointId] = useState(0);
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
 
   useEffect(() => {
     // Use real telemetry data from store

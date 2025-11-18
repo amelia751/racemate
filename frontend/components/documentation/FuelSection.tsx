@@ -420,7 +420,7 @@ model = GradientBoostingRegressor(
             details={[
               'Serialization: Pickle format (joblib.dump)',
               'Model size: 24.3 MB (compressed)',
-              'Upload: Google Cloud Storage (gs://cognirace-models)',
+              'Upload: Google Cloud Storage (gs://racemate-models)',
               'Versioning: SHA256 hash + timestamp',
               'Backend loads model on startup (12ms inference latency)',
             ]}

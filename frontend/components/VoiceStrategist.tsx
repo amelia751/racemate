@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Bot, Activity, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 
 interface Recommendation {
   id: string;
@@ -19,7 +19,7 @@ interface Recommendation {
 export default function VoiceStrategist() {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [currentStatus, setCurrentStatus] = useState('Waiting for data...');
-  const { isStreaming, addDebugLog } = useCogniraceStore();
+  const { isStreaming, addDebugLog } = useRaceMateStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const checkIntervalRef = useRef<NodeJS.Timeout | null>(null);
 

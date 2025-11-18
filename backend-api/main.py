@@ -1,5 +1,5 @@
 """
-Cognirace Real-Time Prediction API
+RaceMate Real-Time Prediction API
 FastAPI service for ML model predictions on port 8005
 """
 
@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
     """Lifespan context manager for startup/shutdown"""
     # Startup
     print("="*70)
-    print("🏁 COGNIRACE PREDICTION API")
+    print("🏁 RACEMATE PREDICTION API")
     print("="*70)
     print(f"Port: {settings.api_port}")
     print(f"Project: {settings.gcp_project_id}")
@@ -37,7 +37,7 @@ async def lifespan(app: FastAPI):
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Cognirace Prediction API",
+    title="RaceMate Prediction API",
     description="Real-time ML predictions for GR Cup race strategy",
     version="1.0.0",
     docs_url="/docs",
@@ -83,7 +83,7 @@ async def global_exception_handler(request, exc):
 async def root():
     """Root endpoint"""
     return {
-        "service": "Cognirace Prediction API",
+        "service": "RaceMate Prediction API",
         "version": "1.0.0",
         "status": "running",
         "endpoints": {

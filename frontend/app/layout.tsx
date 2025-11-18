@@ -6,7 +6,7 @@ import { LiveKitProvider } from "@/lib/livekit/LiveKitContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Cognirace - Real-Time Race Strategy Platform",
+  title: "RaceMate - Real-Time Race Strategy Platform",
   description: "AI-powered voice agent for real-time racing strategy, fuel management, and tire analysis",
 };
 

@@ -66,7 +66,7 @@ export default function ArchitectureSection() {
         </CardHeader>
         <CardContent className="space-y-6">
           <p className="text-muted-foreground leading-relaxed">
-            <strong className="text-blue-400">CogniRace</strong> is a production-grade ML system processing 
+            <strong className="text-blue-400">RaceMate</strong> is a production-grade ML system processing 
             <strong> 10 Hz telemetry</strong>, running <strong>8 specialized models</strong>, detecting 
             <strong> 12+ race events</strong>, and generating <strong>professional recommendations</strong> in under 200ms end-to-end.
           </p>
@@ -153,7 +153,7 @@ export default function ArchitectureSection() {
                   icon={<Cloud className="w-5 h-5" />}
                   title="Google Cloud Storage"
                   description="Model artifact storage and versioning"
-                  features={['gs://cognirace-models', 'Versioned models', 'Fast loading', 'Scalable']}
+                  features={['gs://racemate-models', 'Versioned models', 'Fast loading', 'Scalable']}
                 />
               </div>
             </TabsContent>
@@ -387,7 +387,7 @@ export default function ArchitectureSection() {
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span><strong>Models:</strong> Loaded from GCS bucket (gs://cognirace-models)</span>
+                  <span><strong>Models:</strong> Loaded from GCS bucket (gs://racemate-models)</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
@@ -460,7 +460,7 @@ export default function ArchitectureSection() {
         <CardHeader>
           <CardTitle className="text-2xl text-blue-400">System Highlights</CardTitle>
           <CardDescription>
-            What makes CogniRace production-ready
+            What makes RaceMate production-ready
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 
 interface Metric {
   label: string;
@@ -19,7 +19,7 @@ interface Metric {
 }
 
 export default function DataTower() {
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
   
   const metrics: Metric[] = [
     { label: 'SPEED', value: telemetryData?.speed || 0, unit: 'km/h', color: 'cyan', trend: 'up' },

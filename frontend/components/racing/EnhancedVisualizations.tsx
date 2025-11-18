@@ -8,13 +8,13 @@
 import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { Card, CardContent } from '@/components/ui/card';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 
 // Fuel Consumption - Red Bull Style Vertical Bars
 export function FuelConsumptionChart() {
   const [fuelHistory, setFuelHistory] = useState<number[]>([35, 35, 35]);
   const [isStreaming, setIsStreaming] = useState(false);
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
 
   useEffect(() => {
     if (telemetryData) {
@@ -96,7 +96,7 @@ export function TireTemperatureDisplay() {
     RR: 86
   });
   const [isStreaming, setIsStreaming] = useState(false);
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
 
   useEffect(() => {
     // Only update when streaming (when telemetryData is being updated)
@@ -182,7 +182,7 @@ export function BrakeSystemStatus() {
   const [tempHistory, setTempHistory] = useState<any[]>([]);
   const [historyId, setHistoryId] = useState(0);
   const [isStreaming, setIsStreaming] = useState(false);
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
 
   useEffect(() => {
     // Only update when streaming (when telemetryData is being updated)
@@ -320,7 +320,7 @@ export function BrakeCircularGauges() {
     RL: { temp: 410, pressure: 82, wear: 12 },
     RR: { temp: 415, pressure: 83, wear: 13 }
   });
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
 
   useEffect(() => {
     if (telemetryData) {
@@ -397,7 +397,7 @@ export function BrakeCompactMatrix() {
     RL: { temp: 410, pressure: 82, wear: 12 },
     RR: { temp: 415, pressure: 83, wear: 13 }
   });
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
 
   useEffect(() => {
     if (telemetryData) {

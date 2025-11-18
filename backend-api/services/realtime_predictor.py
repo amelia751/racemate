@@ -1,5 +1,5 @@
 """
-Real-Time Prediction Engine for Cognirace
+Real-Time Prediction Engine for RaceMate
 Processes streaming telemetry through all 8 ML models and detects events
 """
 

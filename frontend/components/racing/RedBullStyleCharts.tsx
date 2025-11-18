@@ -7,7 +7,7 @@
 import { useEffect, useState, memo } from 'react';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Card, CardContent } from '@/components/ui/card';
-import { useCogniraceStore } from '@/lib/store';
+import { useRaceMateStore } from '@/lib/store';
 
 interface DataPoint {
   time: string;
@@ -17,7 +17,7 @@ interface DataPoint {
 export const ThrottleBrakeTimeSeries = memo(function ThrottleBrakeTimeSeries() {
   const [data, setData] = useState<any[]>([]);
   const [pointId, setPointId] = useState(0);
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
 
   useEffect(() => {
     if (telemetryData) {
@@ -59,7 +59,7 @@ export const ThrottleBrakeTimeSeries = memo(function ThrottleBrakeTimeSeries() {
 export const GForceTimeSeries = memo(function GForceTimeSeries() {
   const [data, setData] = useState<any[]>([]);
   const [pointId, setPointId] = useState(0);
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
 
   useEffect(() => {
     // Only update when streaming (when telemetryData is being updated)
@@ -100,7 +100,7 @@ export const GForceTimeSeries = memo(function GForceTimeSeries() {
 })
 
 export function FuelBar() {
-  const { telemetryData } = useCogniraceStore();
+  const { telemetryData } = useRaceMateStore();
   const fuelLevel = telemetryData?.fuel_level || 35.2;
   const fuelPercentage = (fuelLevel / 50) * 100;
   
