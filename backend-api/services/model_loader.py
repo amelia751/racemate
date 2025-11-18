@@ -24,13 +24,21 @@ class ModelLoader:
     
     def __init__(self):
         # Initialize GCS client
-        credentials = service_account.Credentials.from_service_account_file(
-            settings.get_absolute_credential_path()
-        )
-        self.storage_client = storage.Client(
-            project=settings.gcp_project_id,
-            credentials=credentials
-        )
+        # If running on Cloud Run, use default credentials (service account is automatically attached)
+        # Otherwise, use explicit service account file
+        if settings.gcp_service_account_path and settings.gcp_service_account_path.strip():
+            credentials = service_account.Credentials.from_service_account_file(
+                settings.get_absolute_credential_path()
+            )
+            self.storage_client = storage.Client(
+                project=settings.gcp_project_id,
+                credentials=credentials
+            )
+        else:
+            # Use default credentials (works on Cloud Run)
+            self.storage_client = storage.Client(
+                project=settings.gcp_project_id
+            )
         
         # Create cache directory
         self.cache_dir = Path(settings.model_cache_dir)

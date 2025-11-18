@@ -13,10 +13,12 @@ import { useCogniraceStore } from '@/lib/store';
 // Fuel Consumption - Red Bull Style Vertical Bars
 export function FuelConsumptionChart() {
   const [fuelHistory, setFuelHistory] = useState<number[]>([35, 35, 35]);
+  const [isStreaming, setIsStreaming] = useState(false);
   const { telemetryData } = useCogniraceStore();
 
   useEffect(() => {
     if (telemetryData) {
+      setIsStreaming(true);
       const fuel = telemetryData.fuel_level || 35;
       setFuelHistory(prev => [...prev, fuel].slice(-3)); // Keep last 3 readings
     }
@@ -57,11 +59,13 @@ export function FuelConsumptionChart() {
                       style={{
                         height: `${percent}%`,
                         backgroundColor: color,
-                        opacity: 0.85
+                        opacity: isStreaming ? 0.85 : 0.3
                       }}
                     />
                   </div>
-                  <div className="text-[7px] text-muted-foreground">{Math.round(fuel)}L</div>
+                  <div className="text-[7px] text-muted-foreground">
+                    {isStreaming ? `${Math.round(fuel)}L` : '--'}
+                  </div>
                 </div>
               );
             })}
@@ -69,9 +73,13 @@ export function FuelConsumptionChart() {
 
           {/* Current fuel display */}
           <div className="text-center flex-shrink-0">
-            <div className="text-orange-400 text-2xl font-black font-mono">{currentFuel.toFixed(0)}</div>
+            <div className="text-orange-400 text-2xl font-black font-mono">
+              {isStreaming ? currentFuel.toFixed(0) : '--'}
+            </div>
             <div className="text-[7px] text-muted-foreground">L</div>
-            <div className="text-[7px] text-muted-foreground mt-0.5">{lapsRemaining}L</div>
+            <div className="text-[7px] text-muted-foreground mt-0.5">
+              {isStreaming ? `${lapsRemaining}L` : '--'}
+            </div>
           </div>
         </div>
       </CardContent>

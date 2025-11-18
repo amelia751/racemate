@@ -312,5 +312,3 @@ This can be used for cross-validation and additional context.
 
 **Event**: Hack the Track 2025 - Toyota GR Racing
 
-**Last Updated**: October 22, 2025
-

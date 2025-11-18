@@ -35,7 +35,11 @@ const SpeedChart = memo(function SpeedChart({ data }: { data: TelemetryPoint[] }
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
             <XAxis hide />
-            <YAxis stroke="#00ffff" domain={[100, 250]} />
+            <YAxis 
+              stroke="#00ffff" 
+              domain={[100, 250]} 
+              tickFormatter={(value) => Math.round(value).toString()}
+            />
             <Tooltip
               contentStyle={{ backgroundColor: '#000', border: '1px solid #00ffff' }}
               labelStyle={{ color: '#00ffff' }}
@@ -70,7 +74,11 @@ const RPMChart = memo(function RPMChart({ data }: { data: TelemetryPoint[] }) {
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#333" />
             <XAxis hide />
-            <YAxis stroke="#facc15" domain={[6000, 10000]} />
+            <YAxis 
+              stroke="#facc15" 
+              domain={[6000, 10000]} 
+              tickFormatter={(value) => Math.round(value).toString()}
+            />
             <Tooltip
               contentStyle={{ backgroundColor: '#000', border: '1px solid #facc15' }}
               labelStyle={{ color: '#facc15' }}

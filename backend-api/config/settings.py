@@ -1,17 +1,18 @@
 from pydantic_settings import BaseSettings
 from pathlib import Path
+import os
 
 class Settings(BaseSettings):
     # GCP
     gcp_project_id: str
-    gcp_service_account_path: str
+    gcp_service_account_path: str = ""  # Optional - Cloud Run uses service account automatically
     gcp_region: str = "us-central1"
     
     # Cloud Storage
     gcs_bucket_models: str
     
     # API Configuration
-    api_port: int = 8005
+    api_port: int = int(os.getenv("PORT", "8005"))  # Use Cloud Run's PORT or default to 8005
     api_host: str = "0.0.0.0"
     api_workers: int = 4
     api_reload: bool = False
