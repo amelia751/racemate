@@ -1,4 +1,8 @@
 .env.local
+
+# Allow .env.example
+!.env.example
+
 config/gcp_credentials.json
 __pycache__/
 *.pyc

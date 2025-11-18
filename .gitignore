@@ -4,6 +4,10 @@
 *.env
 .env.*
 
+# Allow .env.example files
+!.env.example
+!**/.env.example
+
 # Credentials
 **/gcp_credentials.json
 **/*credentials*.json

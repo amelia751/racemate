@@ -2,6 +2,9 @@
 .env.local
 .env
 
+# Allow .env.example
+!.env.example
+
 # Python
 __pycache__/
 *.py[cod]
