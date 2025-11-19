@@ -335,18 +335,6 @@ This prevents alert fatigue while ensuring critical issues are highlighted.
 
 ---
 
-## 📧 Contact
-
-For questions about this project:
-- **GitHub**: [Your GitHub Profile]
-- **Email**: [Your Email]
-
-For competition questions:
-- **Testing**: testing@devpost.com
-- **Toyota**: trd.hackathon@toyota.com
-
----
-
 ## ⚖️ License
 
 This project was built for Hack the Track 2025. Dataset usage subject to hackathon rules.
